@@ -1,3 +1,15 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+:root {
+  --helios-color: hsl(25, 60%, 65%);
+}
+
+.dark {
+  --helios-color: hsl(25, 70%, 75%);
+}
+
+.helios {
+  --color-fd-primary: var(--helios-color);
+}
