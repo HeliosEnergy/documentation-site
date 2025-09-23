@@ -1,0 +1,69 @@
+---
+title: Workspaces & Tenants
+description: Isolate teams, projects, and billing with workspaces.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Banner } from 'fumadocs-ui/components/banner';
+
+## Setting Up a Workspace
+
+Workspaces are the best way to manage multiple projects or teams under a single organization.
+
+<Steps>
+  <Step>
+    ### 1. Create a Workspace
+    Navigate to the sidebar and click the "+ New Workspace" button.
+  </Step>
+  <Step>
+    ### 2. Name Your Workspace
+    Give your workspace a descriptive name. See our naming conventions below.
+  </Step>
+  <Step>
+    ### 3. Assign Team Members & Roles
+    Invite members and assign roles to control access.
+  </Step>
+</Steps>
+
+<Banner title="Tip: Workspace Naming Conventions">
+  Use clear and consistent names for your workspaces to keep them organized.
+  - **By Environment**: `prod-api`, `staging-workers`, `dev-database`
+  - **By Team**: `data-science-team`, `frontend-devs`, `billing-services`
+  - **By Project**: `project-alpha`, `project-gamma-inference`
+</Banner>
+
+### Role Permissions
+
+Each role has specific permissions. Use this guide to assign the correct level of access.
+
+<table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+  <thead className="bg-gray-50 dark:bg-gray-800">
+    <tr>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Role</th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Permissions</th>
+    </tr>
+  </thead>
+  <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Admin</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Manage billing, manage workspace settings, invite/remove members, delete workspace, all member permissions.</td>
+    </tr>
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-gray-900 dark:text-white">Member</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Deploy containers, view logs, manage their own deployments, view workspace settings.</td>
+    </tr>
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Viewer</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">View deployments and logs. Cannot deploy or change settings.</td>
+    </tr>
+  </tbody>
+</table>
+
+### Multi-tenancy and Isolation
+
+For agencies or resellers, you can create a separate workspace for each client or tenant. This ensures that billing and resources are completely separate, providing a clean and secure multi-tenant environment.
+
+{/*
+![Workspace Diagram](https://placehold.co/600x400.png?text=Workspace+<-->+Users+<-->+Tenants)
+*/}
+*Diagram showing the relationship between workspaces, users, and tenants.*

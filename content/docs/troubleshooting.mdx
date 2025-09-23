@@ -1,0 +1,102 @@
+---
+title: Troubleshooting & FAQ
+description: Get help with common issues and contact support.
+---
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Banner } from 'fumadocs-ui/components/banner';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+## Deployment Issues
+
+<Accordions type="single">
+  <Accordion title="Deployment stuck in 'Pending'">
+    **Problem:** Your deployment is not starting.
+
+    **Solution:**
+    1.  **Check Docker Image:** Ensure the image exists in the registry and the name is correct.
+    2.  **Check Credentials:** Verify that your registry credentials are correct in Helios.
+    3.  **Contact Support:** If you are still stuck, contact support with your Deployment ID.
+  </Accordion>
+  <Accordion title="GPU not available">
+    **Problem:** You see a "GPU not available" error.
+
+    **Solution:**
+    1.  **Try a Different Region:** The specific GPU you requested may be at capacity in the current region.
+    2.  **Try a Different GPU Type:** Consider using a different GPU model.
+    3.  **Check Status Page:** Visit our [Status Page](https://status.helios.com) for real-time availability.
+  </Accordion>
+  <Accordion title="Container crashing or restarting">
+    **Problem:** Your container starts but then stops or enters a crash loop.
+
+    **Solution:**
+    1.  **Check Container Logs:** The container logs on the deployment details page are the best place to find error messages from your application.
+    2.  **Test Locally:** Try running the Docker container on your local machine to see if you can reproduce the error.
+  </Accordion>
+</Accordions>
+
+## Billing Issues
+
+<Accordions type="single">
+  <Accordion title="Why did my payment fail?">
+    **Problem:** Your payment was declined.
+
+    **Solution:**
+    1.  **Verify Card Details:** Double-check your card number, expiration date, and CVC in the **Billing > Invoices** section.
+    2.  **Contact Your Bank:** Your bank may be blocking the transaction for security reasons.
+    3.  **Try Another Method:** Use a different credit card or payment method.
+  </Accordion>
+</Accordions>
+
+## Frontend-Exposed Error Codes
+
+This section details the error codes and messages that can be exposed to the frontend from the container and image registry APIs.
+
+### Container Creation Errors
+
+| HTTP Status Code | Error Message | Description |
+|---|---|---|
+| 400 Bad Request | `Invalid request format` | The request body sent for container creation is malformed or missing required fields. |
+| 400 Bad Request | `Invalid workspace tag format` | The provided workspace tag is not a valid UUID format. |
+| 400 Bad Request | `Invalid workspace tag` | The provided workspace tag does not correspond to an existing workspace. |
+| 400 Bad Request | `Invalid image tag format` | The provided container image ID is not a valid UUID format. |
+| 400 Bad Request | `Invalid image tag` | The provided container image ID does not correspond to an existing image. |
+
+### Image Creation Errors
+
+| HTTP Status Code | Error Message | Description |
+|---|---|---|
+| 400 Bad Request | `Invalid request body` | The request body sent for creating a container image is malformed or missing required fields. |
+
+### Image Deletion Errors
+
+| HTTP Status Code | Error Message | Description |
+|---|---|---|
+| 400 Bad Request | `Failed to parse tag` | The provided image tag is not a valid UUID format. |
+| 404 Not Found | `No container image found with specified tag` | No container image exists with the provided tag. |
+| 409 Conflict | `Cannot delete image - containers are still running` | The image cannot be deleted because one or more containers are currently using it. |
+
+### Image Listing Errors
+
+| HTTP Status Code | Error Message | Description |
+|---|---|---|
+| 400 Bad Request | `Invalid workspace ID format` | The provided workspace ID is not a valid UUID format. |
+
+### Image Tag Listing Errors (by Image Tag)
+
+| HTTP Status Code | Error Message | Description |
+|---|---|---|
+| 400 Bad Request | `Invalid image tag` | The provided image tag is not a valid UUID format. |
+
+### Image Tag Listing Errors (by Workspace Tag)
+
+| HTTP Status Code | Error Message | Description |
+|---|---|---|
+| 400 Bad Request | `Invalid workspace ID format` | The provided workspace ID is not a valid UUID format. |
+
+<Banner title="Need More Help?">
+  Our support team is here to help.
+
+  - **In-dashboard chat:** For the fastest response (typically under 5 minutes).
+  - **Email:** [support@helios.com](mailto:support@helios.com) (response within 24 hours).
+</Banner>

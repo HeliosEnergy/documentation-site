@@ -1,0 +1,81 @@
+---
+title: Billing & Payments
+description: Understand and manage your billing on Helios.
+---
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Banner } from 'fumadocs-ui/components/banner';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+## Payment Methods
+
+We accept a variety of payment methods to suit your needs.
+
+<table className="min-w-full divide-y divide-fd-border">
+  <thead className="bg-fd-muted">
+    <tr>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Method</th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Availability</th>
+      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Best For</th>
+    </tr>
+  </thead>
+  <tbody className="bg-fd-card divide-y divide-fd-border">
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-fd-foreground">Credit Card</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-fd-muted-foreground">Global</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-fd-muted-foreground">Pay-as-you-go, individuals, small teams</td>
+    </tr>
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-fd-foreground">Annual Contract</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-fd-muted-foreground">Global</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-fd-muted-foreground">Enterprises, committed usage discounts</td>
+    </tr>
+  </tbody>
+</table>
+
+## Managing Billing
+
+Follow these steps to effectively manage your Helios billing and payments.
+
+<Steps>
+  <Step>
+    #### 1. Track Your Usage
+    Navigate to the **Billing > Usage** tab to view detailed, real-time breakdowns of your GPU usage and associated costs.
+  </Step>
+  <Step>
+    #### 2. Manage Payments
+    Access the **Billing > Invoices** section to download past invoices and update your payment methods.
+  </Step>
+  <Step>
+    #### 3. Set Budget Alerts
+    Configure budget alerts to receive notifications when your spending approaches or exceeds predefined thresholds.
+  </Step>
+</Steps>
+
+<Banner title="Billing Best Practices">
+  - Set up budget alerts *before* running production-scale jobs.
+  - Always download invoices for your records after payment confirmation.
+  - Regularly review your usage to identify cost-saving opportunities.
+</Banner>
+
+<Banner preset="warning" title="Payment Failed?">
+  If your payment fails, check these three things first:
+  1.  Is your card information correct and up-to-date?
+  2.  Has your card expired?
+  3.  Does your card have sufficient funds?
+  If you still have issues, please contact your bank or our support team.
+</Banner>
+
+## Billing FAQ
+
+<Accordions type="single">
+  <Accordion title="Why did my payment fail?">
+    The most common reason for payment failure is an incorrect credit card number or a card that has expired. Please double-check your payment information in the **Billing > Invoices** section. If the problem persists, contact your bank.
+  </Accordion>
+  <Accordion title="How do I get a refund?">
+    Please contact our support team with your invoice number and the reason for the refund request.
+  </Accordion>
+  <Accordion title="Can I get a yearly plan?">
+    Yes, we offer annual contracts with significant discounts for committed usage. Please contact our sales team to learn more.
+  </Accordion>
+</Accordions>

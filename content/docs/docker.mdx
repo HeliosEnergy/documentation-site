@@ -1,0 +1,31 @@
+---
+title: Docker Image Management
+description: Build and push your Docker images for deployment on Helios.
+---
+
+import { Banner } from 'fumadocs-ui/components/banner';
+
+## Pushing Docker Images
+
+To deploy on Helios, your application needs to be containerized using Docker. You will build your Docker image and push it to a container registry like Docker Hub, GHCR, or a private registry.
+
+### Build and Push
+
+Here are the commands to build and push your image:
+
+```bash
+docker build -t your-repo/your-image:1.0 .
+docker login
+docker push your-repo/your-image:1.0
+```
+
+<Banner title="Tip: Use Specific Version Tags">
+  Avoid using the `:latest` tag for production deployments. Using specific tags like `:v1.0.2` or `:stable-2024-09-22` ensures that your deployments are predictable and repeatable.
+</Banner>
+
+### Common Docker Issues
+
+- **`docker push` fails with `access denied`**: Ensure you are logged into the correct Docker registry and have permissions to push to the repository.
+- **Image not found during deployment**: Double-check that the image name and tag in your Helios deployment configuration exactly match the image in your registry.
+
+For more detailed troubleshooting, see the [Troubleshooting](/docs/troubleshooting) guide.

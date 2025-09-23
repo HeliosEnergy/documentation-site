@@ -1,0 +1,69 @@
+---
+title: Security, Secrets & Data
+description: Best practices for securing your applications on Helios.
+---
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Banner } from 'fumadocs-ui/components/banner';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Managing Secrets
+
+Never hard-code secrets like API keys or database passwords in your code. Use Helios's built-in secrets management to store and inject them into your containers securely.
+
+1. **Navigate to Secrets**: Go to the **Secrets** section in your workspace.
+2. **Add a Secret**: Click "Add Secret" and enter your secret as a key-value pair.
+3. **Reference in Deployment**: In your deployment configuration, you can select the secrets to mount as environment variables in your container.
+
+<Banner preset="danger" title="Warning: Never Commit Secrets to Git">
+  Always use a `.gitignore` file to exclude your secret files and never commit them to your repository. Leaked credentials are a major security risk.
+</Banner>
+
+### Referencing Secrets in Deployments
+
+Here is how you would reference a secret named `API_KEY` in your deployment configuration.
+
+<Tabs items={['UI', 'YAML']}>
+  <Tab value="UI">
+    In the deployment UI, find the "Secrets" section and add a new variable. Set the name to `API_KEY` and the value to the secret you created.
+  </Tab>
+  <Tab value="YAML">
+    ```yaml
+    # Example deployment.yaml
+    # (This is a conceptual example)
+    apiVersion: v1
+    kind: Deployment
+    metadata:
+      name: my-app
+    spec:
+      template:
+        spec:
+          containers:
+          - name: my-container
+            image: my-image
+            env:
+              - name: API_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: my-helios-secret
+                    key: API_KEY
+    ```
+  </Tab>
+</Tabs>
+
+## Data Persistence and Encryption
+
+- **Persistent Storage**: Data stored in a container is ephemeral. For data that needs to persist, attach a persistent storage volume to your deployment. [Learn more about persistent storage](#).
+- **Encryption at Rest**: All data on persistent storage volumes is encrypted at rest by default.
+- **Encryption in Transit**: All traffic to and from the Helios platform is encrypted using TLS.
+
+## Security FAQ
+
+<Accordions type="single">
+  <Accordion title="What happens if my deployment is missing a secret?">
+    If your application tries to access an environment variable that was not properly injected as a secret, it will likely fail or crash. Always check the container logs for errors related to missing credentials.
+  </Accordion>
+  <Accordion title="Are my secrets encrypted?">
+    Yes, all secrets are encrypted at rest in our database and only decrypted when they are injected into your running container.
+  </Accordion>
+</Accordions>

@@ -1,0 +1,95 @@
+---
+title: Getting Started
+description: Your first steps into Helios GPU Cloud.
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Banner } from 'fumadocs-ui/components/banner';
+import { Cpu, Server, FolderOpen, Shield, Container, Settings, Upload } from 'lucide-react';
+
+## Introduction
+
+Helios <span className='text-fd-muted-foreground text-sm'>(Heel-ee-os)</span> is a cloud platform designed to give developers and businesses instant, scalable access to GPU resources for AI inference. We handle the infrastructure so you can focus on deploying and scaling your models.
+
+Helios has different parts:
+
+<Cards>
+
+<Card icon={<Cpu className="text-orange-400" />} title='GPU Access'>
+
+Handles the core GPU infrastructure, providing instant access to high-performance computing resources for AI workloads.
+
+</Card>
+
+<Card icon={<Server className="text-orange-400" />} title='Deployment Platform'>
+
+The deployment system that manages containerized applications, handles scaling, and ensures reliable GPU resource allocation.
+
+</Card>
+
+<Card icon={<FolderOpen className="text-orange-400" />} title='Workspaces'>
+
+Organize your projects, manage teams, and control access to GPU resources across different environments.
+
+</Card>
+
+<Card icon={<Shield className="text-orange-400" />} title='Security'>
+
+Built-in security features to protect your AI models, data, and GPU resources with enterprise-grade protection.
+
+</Card>
+
+</Cards>
+
+<Banner title="Watch the 2-Minute Demo">
+  See how to go from sign-up to a live deployment in this short walkthrough.
+  {/*
+  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, marginTop: '1rem' }}>
+    <iframe
+      src="https://www.youtube.com/embed/example-video-id"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+    ></iframe>
+  </div>
+  */}
+</Banner>
+
+### Prerequisites
+
+<Banner preset="warning">
+  **What You Need to Get Started:**
+  - A Helios account ([Sign up here](#)).
+  - A Docker Hub account (or other container registry).
+  - Basic familiarity with Docker.
+</Banner>
+
+### Your First Deployment
+
+<Steps>
+  <Step>
+    #### 1. Sign Up
+    Create your Helios account. You'll get free credits to get started.
+  </Step>
+  <Step>
+    #### 2. Create a Workspace
+    Workspaces help you organize your projects and teams. [Learn more about workspaces](/docs/workspaces).
+  </Step>
+  <Step>
+    #### 3. Deploy a Model
+    Choose a pre-built model or bring your own Docker container. [Learn how to deploy](/docs/deployments).
+  </Step>
+</Steps>
+
+### Key Next Steps
+
+Once you're set up, explore these essential guides.
+
+<Cards>
+  <Card icon={<Container className="text-orange-400" />} title="Deploy a Container" href="/docs/deployments" />
+  <Card icon={<Settings className="text-orange-400" />} title="Manage Workspaces" href="/docs/workspaces" />
+  <Card icon={<Shield className="text-orange-400" />} title="Secure Your App" href="/docs/security" />
+  <Card icon={<Upload className="text-orange-400" />} title="Push a Docker Image" href="/docs/docker" />
+</Cards>
