@@ -1,13 +1,6 @@
 import '@/app/global.css';
 import { RootProvider } from 'fumadocs-ui/provider';
-import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google';
-
-const bricolage = Bricolage_Grotesque({
-  subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  variable: '--font-bricolage',
-  display: 'swap',
-});
+import { Hanken_Grotesk, JetBrains_Mono } from 'next/font/google';
 
 const hanken = Hanken_Grotesk({
   subsets: ['latin'],
@@ -27,7 +20,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${hanken.variable} ${jetbrains.variable}`}
+      className={`${hanken.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
       <body className="flex flex-col min-h-screen font-sans">
