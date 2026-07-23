@@ -2,14 +2,70 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
+/* =========================================================================
+   Helios documentation — clean, professional theme.
+   Light by default, restrained dark mode. One warm accent, no effects.
+   ========================================================================= */
+
+@theme {
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+/* ---- Light (default) ---- */
 :root {
-  --helios-color: hsl(25, 60%, 65%);
+  --color-fd-background: oklch(1 0 0);
+  --color-fd-foreground: oklch(0.24 0.006 60);
+  --color-fd-muted: oklch(0.975 0.002 80);
+  --color-fd-muted-foreground: oklch(0.5 0.012 60);
+  --color-fd-popover: oklch(1 0 0);
+  --color-fd-popover-foreground: oklch(0.24 0.006 60);
+  --color-fd-card: oklch(0.99 0.002 80);
+  --color-fd-card-foreground: oklch(0.24 0.006 60);
+  --color-fd-border: oklch(0.915 0.004 70);
+  --color-fd-primary: oklch(0.56 0.16 42);
+  --color-fd-primary-foreground: oklch(0.99 0.004 90);
+  --color-fd-secondary: oklch(0.97 0.003 80);
+  --color-fd-secondary-foreground: oklch(0.3 0.01 55);
+  --color-fd-accent: oklch(0.965 0.006 70);
+  --color-fd-accent-foreground: oklch(0.3 0.01 55);
+  --color-fd-ring: oklch(0.56 0.16 42);
 }
 
+/* ---- Dark (restrained, cool-neutral) ---- */
 .dark {
-  --helios-color: hsl(25, 70%, 75%);
+  --color-fd-background: oklch(0.185 0.004 260);
+  --color-fd-foreground: oklch(0.94 0.004 250);
+  --color-fd-muted: oklch(0.235 0.005 260);
+  --color-fd-muted-foreground: oklch(0.72 0.008 250);
+  --color-fd-popover: oklch(0.215 0.005 260);
+  --color-fd-popover-foreground: oklch(0.94 0.004 250);
+  --color-fd-card: oklch(0.215 0.005 260);
+  --color-fd-card-foreground: oklch(0.94 0.004 250);
+  --color-fd-border: oklch(0.32 0.006 260);
+  --color-fd-primary: oklch(0.72 0.135 55);
+  --color-fd-primary-foreground: oklch(0.2 0.01 60);
+  --color-fd-secondary: oklch(0.25 0.005 260);
+  --color-fd-secondary-foreground: oklch(0.92 0.004 250);
+  --color-fd-accent: oklch(0.28 0.006 260);
+  --color-fd-accent-foreground: oklch(0.94 0.004 250);
+  --color-fd-ring: oklch(0.72 0.135 55);
 }
 
-.helios {
-  --color-fd-primary: var(--helios-color);
+.dark #nd-sidebar {
+  --color-fd-muted: oklch(0.235 0.005 260);
+  --color-fd-secondary: oklch(0.26 0.005 260);
+  --color-fd-muted-foreground: oklch(0.73 0.008 250);
+}
+
+/* ---- Typography ---- */
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#nd-page h1,
+#nd-page h2,
+#nd-page h3 {
+  letter-spacing: -0.011em;
 }

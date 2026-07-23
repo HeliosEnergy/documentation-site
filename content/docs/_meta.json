@@ -1,14 +1,13 @@
 {
   "pages": [
+    "index",
     "getting-started",
-    "docker",
-    "deployments",
-    "workspaces",
-    "security",
-    "troubleshooting",
-    "billing",
     "dashboard",
-    "placeholders",
-    "type-table-example"
+    "workspaces",
+    "deployments",
+    "docker",
+    "security",
+    "billing",
+    "troubleshooting"
   ]
 }

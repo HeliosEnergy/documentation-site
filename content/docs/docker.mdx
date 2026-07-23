@@ -3,7 +3,7 @@ title: Docker Image Management
 description: Build and push your Docker images for deployment on Helios.
 ---
 
-import { Banner } from 'fumadocs-ui/components/banner';
+import { Callout } from 'fumadocs-ui/components/callout';
 
 ## Pushing Docker Images
 
@@ -19,9 +19,9 @@ docker login
 docker push your-repo/your-image:1.0
 ```
 
-<Banner title="Tip: Use Specific Version Tags">
+<Callout title="Tip: Use Specific Version Tags">
   Avoid using the `:latest` tag for production deployments. Using specific tags like `:v1.0.2` or `:stable-2024-09-22` ensures that your deployments are predictable and repeatable.
-</Banner>
+</Callout>
 
 ### Common Docker Issues
 
