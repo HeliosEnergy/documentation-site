@@ -5,7 +5,7 @@ description: Your first steps into Helios GPU Cloud.
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { Banner } from 'fumadocs-ui/components/banner';
+import { Callout } from 'fumadocs-ui/components/callout';
 import { Cpu, Server, FolderOpen, Shield, Container, Settings, Upload } from 'lucide-react';
 
 ## Introduction
@@ -42,29 +42,17 @@ Built-in security features to protect your AI models, data, and GPU resources wi
 
 </Cards>
 
-<Banner title="Watch the 2-Minute Demo">
-  See how to go from sign-up to a live deployment in this short walkthrough.
-  {/*
-  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, marginTop: '1rem' }}>
-    <iframe
-      src="https://www.youtube.com/embed/example-video-id"
-      frameBorder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-    ></iframe>
-  </div>
-  */}
-</Banner>
+<Callout title="Watch the 2-minute demo">
+  See how to go from sign-up to a live deployment in a short walkthrough. Video walkthrough coming soon.
+</Callout>
 
 ### Prerequisites
 
-<Banner preset="warning">
-  **What You Need to Get Started:**
+<Callout type="warn" title="What you need to get started">
   - A Helios account ([Sign up here](#)).
   - A Docker Hub account (or other container registry).
   - Basic familiarity with Docker.
-</Banner>
+</Callout>
 
 ### Your First Deployment
 

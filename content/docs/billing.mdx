@@ -4,7 +4,7 @@ description: Understand and manage your billing on Helios.
 ---
 
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
-import { Banner } from 'fumadocs-ui/components/banner';
+import { Callout } from 'fumadocs-ui/components/callout';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 ## Payment Methods
@@ -52,19 +52,19 @@ Follow these steps to effectively manage your Helios billing and payments.
   </Step>
 </Steps>
 
-<Banner title="Billing Best Practices">
+<Callout title="Billing Best Practices">
   - Set up budget alerts *before* running production-scale jobs.
   - Always download invoices for your records after payment confirmation.
   - Regularly review your usage to identify cost-saving opportunities.
-</Banner>
+</Callout>
 
-<Banner preset="warning" title="Payment Failed?">
+<Callout type="warn" title="Payment Failed?">
   If your payment fails, check these three things first:
   1.  Is your card information correct and up-to-date?
   2.  Has your card expired?
   3.  Does your card have sufficient funds?
   If you still have issues, please contact your bank or our support team.
-</Banner>
+</Callout>
 
 ## Billing FAQ
 

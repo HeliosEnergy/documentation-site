@@ -6,7 +6,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
     <HomeLayout
       {...baseOptions()}
       links={linkItems}
-      className="helios"
+      style={{ '--spacing-fd-container': '1180px' } as React.CSSProperties}
     >
       {children}
     </HomeLayout>

@@ -4,7 +4,7 @@ description: Best practices for securing your applications on Helios.
 ---
 
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
-import { Banner } from 'fumadocs-ui/components/banner';
+import { Callout } from 'fumadocs-ui/components/callout';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
 ## Managing Secrets
@@ -15,9 +15,9 @@ Never hard-code secrets like API keys or database passwords in your code. Use He
 2. **Add a Secret**: Click "Add Secret" and enter your secret as a key-value pair.
 3. **Reference in Deployment**: In your deployment configuration, you can select the secrets to mount as environment variables in your container.
 
-<Banner preset="danger" title="Warning: Never Commit Secrets to Git">
+<Callout type="error" title="Warning: Never Commit Secrets to Git">
   Always use a `.gitignore` file to exclude your secret files and never commit them to your repository. Leaked credentials are a major security risk.
-</Banner>
+</Callout>
 
 ### Referencing Secrets in Deployments
 

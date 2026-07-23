@@ -1,13 +1,28 @@
 ---
-title: Hello World
-description: Your first document
+title: Welcome to Helios
+description: Instant, scalable GPU compute for AI inference — deploy any model without managing infrastructure.
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Rocket, Container, Boxes, CreditCard, Shield, LifeBuoy } from 'lucide-react';
 
-## What is Next?
+Helios is a cloud platform that gives developers instant, scalable access to GPU
+resources for AI inference. Package your code as a container, attach a GPU, and serve it
+as a high-performance web endpoint — we handle the infrastructure.
+
+## Start here
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
+  <Card icon={<Rocket />} title="Getting Started" href="/docs/getting-started" description="Go from sign-up to your first live deployment." />
+  <Card icon={<Container />} title="Deployments" href="/docs/deployments" description="Launch and manage GPU-powered containers." />
+  <Card icon={<Boxes />} title="Workspaces" href="/docs/workspaces" description="Organize projects, teams, and access." />
+  <Card icon={<CreditCard />} title="Billing" href="/docs/billing" description="Understand per-second usage and spend." />
+  <Card icon={<Shield />} title="Security" href="/docs/security" description="Protect your models, data, and resources." />
+  <Card icon={<LifeBuoy />} title="Troubleshooting" href="/docs/troubleshooting" description="Fix common issues and get unstuck." />
 </Cards>
+
+## New to Helios?
+
+The fastest path is the [Getting Started](/docs/getting-started) guide — it walks you
+through creating a workspace, installing the CLI, and shipping your first model in a few
+minutes.
