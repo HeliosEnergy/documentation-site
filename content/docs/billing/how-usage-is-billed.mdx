@@ -1,0 +1,42 @@
+---
+title: How usage is billed
+description: How usage is billed for Helios bare metal and AI inference, and where to find pricing.
+---
+
+Each product is billed differently. This page explains the basis for each one. For prices, see the [Helios pricing page](https://www.helios.co/pricing).
+
+## Bare metal
+
+<Status state="live" />
+
+Bare metal usage is recorded by the hour, pro-rated to elapsed time, starting at **Start access**. Your access window starts at the same time, not when you submit the request or when Helios approves it. Starting access needs an Admin or Owner role. When the access window ends, access to the node ends.
+
+The node card shows the hourly rate and the accrued cost. Usage alerts appear in the console, and you may receive usage notification emails as an access approaches its limit.
+
+See [Billing and access windows](/docs/bare-metal/billing-and-access-windows) and [Request bare metal access](/docs/bare-metal/request-access).
+
+## AI inference
+
+<Status state="live" />
+
+The model card in the AI Inference marketplace shows pricing where a model has pricing. The pricing unit depends on the model: per request, per second, per token, or a combination. Where a model has pricing, usage is charged to your workspace wallet.
+
+If the balance is too low, API requests are rejected with HTTP status `402` and the error code `insufficient_balance`. You can set a monthly budget alert for each model. See [Minimum balance and budget alerts](/docs/billing/autopay-and-alerts), [Models, telemetry and budgets](/docs/inference/models-and-budgets) and [Errors and limits](/docs/api/errors-and-limits).
+
+## Jupyter notebooks
+
+<Status state="unavailable" />
+
+Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as At Capacity. Contact the Helios team for access.
+
+## Committed and reserved capacity
+
+Committed or reserved GPU capacity is arranged with the Helios team. For pricing, see the [pricing page](https://www.helios.co/pricing). To discuss capacity, use [Talk to our team](https://www.helios.co/contact). See [Reserved clusters](/docs/bare-metal/reserved-clusters).
+
+## Related
+
+- [Billing and wallet](/docs/billing)
+- [Add funds](/docs/billing/add-funds)
+- [Product status](/docs/reference/product-status)
+
+<LastVerified date="2026-11-17" />

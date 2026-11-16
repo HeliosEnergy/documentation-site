@@ -1,0 +1,66 @@
+---
+title: Minimum balance and budget alerts
+description: Set a minimum balance on a workspace wallet, and set a monthly budget alert for each AI Inference model in the Helios console.
+---
+
+Wallet Settings has a minimum balance. Separately, each AI Inference model has its own monthly budget with an email alert. There is no budget that covers the whole wallet.
+
+<Status state="live" />
+
+## Minimum balance
+
+The minimum balance is a threshold you set for the wallet. It affects API requests: a request is rejected with HTTP status `402` and the error code `insufficient_balance` when the wallet balance is below the larger of a small platform minimum and your minimum balance. Set it with that in mind. See [Errors and limits](/docs/api/errors-and-limits).
+
+<Steps>
+<Step>
+
+### Open Wallet Settings
+
+Select **Wallet** in the sidebar, then find **Wallet Settings**. You need an Admin or Owner role. See [Roles](/docs/accounts/roles).
+
+</Step>
+<Step>
+
+### Set the amount
+
+Enter an amount in **Minimum Balance ($)** and select **Save Minimum Balance**. **Current Settings** shows the saved value.
+
+</Step>
+</Steps>
+
+## Monthly budget for an inference model
+
+You can set a monthly budget for each AI Inference model. The budget applies to that model in the selected workspace.
+
+<Steps>
+<Step>
+
+### Open the model's Telemetry tab
+
+Open **AI Inference**, choose a model, and open its **Telemetry** tab. The **Budget & Alerts** section shows current spend against the budget.
+
+</Step>
+<Step>
+
+### Set the budget
+
+Select the arrow next to **Budget & Alerts**, enter a **Monthly Limit** in dollars, and select **Confirm**. If the amount is higher than your wallet balance, the dialog shows **Insufficient funds** and offers **Top up Wallet**.
+
+</Step>
+</Steps>
+
+When spend reaches 80 percent of the budget, the console shows **Approaching budget limit** and Helios sends an email alert to the workspace owner. At 100 percent the console shows **Budget exceeded!**. Helios sends the alert email once per month for each budget.
+
+The budget is an alert. It does not block requests. To stop an API key's requests once it has spent a daily amount, set a daily budget limit on that key. See [API keys](/docs/api/authentication-and-keys).
+
+<Callout type="info" title="Budgets are per model">
+The console has no budget that covers the whole wallet. To limit overall spend, add only the funds you intend to spend and check your balance.
+</Callout>
+
+## Related
+
+- [Add funds](/docs/billing/add-funds)
+- [How usage is billed](/docs/billing/how-usage-is-billed)
+- [Models, telemetry and budgets](/docs/inference/models-and-budgets)
+
+<LastVerified date="2026-11-17" />

@@ -1,0 +1,56 @@
+---
+title: Protect your account, keys and nodes
+description: Practical steps to protect your Helios API keys, roles, SSH access and notebooks, and how to report a suspected exposure.
+---
+
+This page is guidance for the steps you control: your API keys, the roles you give people, the SSH keys you add, and the notebook links you share. It does not describe how Helios secures its own systems. For questions about that, [contact the Helios team](/docs/support).
+
+## How do I protect my API keys?
+
+API keys let a program act in your workspace. Anyone who holds a key can use it until it is revoked.
+
+- **Store the key when you create it.** The console shows the full key once, and you cannot view it again. Put it in a secret manager or an environment variable, not in source code.
+- **Keep keys out of client-side code and repositories.** Do not put a key in a web page, a mobile app, a public repository or a chat message.
+- **Use one key per application.** Separate keys let you revoke one without breaking the others.
+- **Grant the fewest scopes.** The default scopes cover inference. Add bare metal scopes only for keys that need them. See [Scopes](/docs/api/scopes).
+- **Set limits.** You can set request rate limits and a daily budget limit on a key.
+- **Revoke a key you no longer use.** Revoke it in the console. A revoked key is rejected with HTTP status `401`.
+
+If a key may have been exposed, revoke it first, create a replacement, update your applications, and then review recent requests in your inference request history. See [API keys](/docs/api/authentication-and-keys).
+
+## How do I give people the right access?
+
+- **Give the least role that works.** The roles are Owner, Admin and Member. Admins can add funds, change the minimum balance, invite people and change roles. Give Admin only to people who need to do those things. See [Roles](/docs/accounts/roles).
+- **Remove people who leave.** An Admin or Owner can remove a member in Users & Access. See [Users and access](/docs/accounts/users-and-access).
+- **Review API keys when someone leaves.** Open the API keys in the console and revoke any key that the person created.
+- **Review guests.** Guests are people from other organizations whom you invited into a workspace. Remove guests when the work is done.
+
+## How do I protect SSH access to bare metal?
+
+- **Share the public key only.** The console asks for an OpenSSH public key. Keep the private key on your own machine, and do not paste it into the console or send it to anyone. Protect it with a passphrase.
+- **Use a strong key type.** The console accepts Ed25519, RSA and ECDSA public keys. It asks for RSA keys of 3072 bits or more.
+- **Remove keys you no longer need.** You can remove an SSH key from an access in the console.
+- **Check the host key.** When the console shows a host key fingerprint, compare it with the fingerprint that your SSH client shows on the first connection.
+
+See [Connect with SSH](/docs/bare-metal/connect-with-ssh).
+
+## How do I protect Jupyter notebooks?
+
+The Jupyter URL and token give access to your notebook. Treat them like a password and do not share them in public places. If a token may have been shared, refresh it in the console, which rotates the token. Deallocate a notebook when you finish. See [Use Jupyter](/docs/notebooks/use-jupyter).
+
+## How do I protect my sign-in?
+
+Use a strong, unique password for your Helios account. If you sign in with Google or Microsoft, protect that account with the sign-in protections that the provider offers. Do not share your sign-in with other people. Invite them to your workspace instead, so that you can remove them later.
+
+## What should I not share with anyone, including Helios support?
+
+- Private keys, passwords, API keys and tokens.
+- Card numbers. Enter card details only in the payment form in the console.
+
+Share public SSH keys and key fingerprints. They are safe to share.
+
+## How do I report a suspected exposure?
+
+If you think a credential was exposed, someone accessed your account without permission, or data was exposed, tell the Helios team. Revoke exposed API keys and remove unknown SSH keys first, then follow the security steps on the [Support page](/docs/support#security-concerns). Do not include the secret itself in your report.
+
+<LastVerified date="2026-11-17" />

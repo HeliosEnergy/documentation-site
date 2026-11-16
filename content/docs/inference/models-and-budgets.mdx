@@ -1,0 +1,85 @@
+---
+title: Models, telemetry and budgets
+description: How model pricing works, what the Telemetry tab shows and how to set a monthly budget alert for a model.
+---
+
+Each inference model has its own category and price. The Telemetry tab on a model page shows usage and health, and lets you set a monthly budget that sends an email alert.
+
+<Status state="live" />
+
+## Where is the list of models?
+
+The **Models** list in the console is the source of truth. Helios adds, changes and removes models over time, so these docs do not list them. Open **AI Inference** in the console to see what is available for your workspace today. To list models from code, use [`GET /models`](/docs/api/inference-endpoints#how-do-you-list-models).
+
+Models belong to a category. The API has an endpoint for each of these categories:
+
+| Category | What it does | API endpoint |
+|---|---|---|
+| Text and chat | Generates text from a conversation | `/inference/chat/completions`, `/inference/llm/{model}` |
+| Multimodal | Answers questions about an image | `/inference/multimodal/{model}` |
+| Image generation | Creates images from a prompt | `/inference/image/{model}` |
+| Text to speech | Creates audio from text | `/inference/tts/{model}` |
+| Speech to text | Transcribes audio | `/inference/stt/{model}` |
+
+See [Inference endpoints](/docs/api/inference-endpoints) for request formats.
+
+## How are inference requests billed?
+
+The model card in the marketplace shows pricing where a model has pricing. The pricing unit depends on the model: per request, per second, per token, or a combination. Where a model has pricing, usage is charged to your workspace wallet. For current rates, see [Helios pricing](https://www.helios.co/pricing).
+
+For API requests that return `202 Accepted`, Helios reserves an estimated cost from your wallet when you submit the request. When the request finishes, the actual cost is charged and any difference is returned to the balance. Cancelling a request that is still pending releases the reserved amount.
+
+<Callout type="warn" title="Requests stop when the wallet is low">
+The API rejects requests with HTTP 402 and the error code `insufficient_balance` when your wallet balance is below a minimum threshold. The threshold is the larger of a Helios platform minimum and the minimum balance you set on your wallet. See [Minimum balance and budget alerts](/docs/billing/autopay-and-alerts) and [Add funds](/docs/billing/add-funds).
+</Callout>
+
+## What does the Telemetry tab show?
+
+Open a model, then open the **Telemetry** tab. The **Usage & Performance** section has a time range switch for 24h, 7d and 30d.
+
+| Section | What it shows |
+|---|---|
+| Usage overview | Total Requests, Tokens Used, Total Cost and Avg Latency for the selected range |
+| Performance History | Requests over time, as an hourly or daily breakdown |
+| Recent Requests | Time, status, latency and cost for recent requests to this model in your workspace |
+| System Health | Health information, shown for models that have it |
+| Budget & Alerts | The monthly budget for this model |
+
+Telemetry is scoped to your workspace.
+
+## How do you set a monthly budget for a model?
+
+<Steps>
+<Step>
+
+Open **AI Inference**, select the model, then open the **Telemetry** tab.
+
+</Step>
+<Step>
+
+In **Budget & Alerts**, select the arrow button to open the **Monthly Limit** dialog.
+
+</Step>
+<Step>
+
+Enter a monthly amount in US dollars and confirm. An amount of 0 means no budget.
+
+</Step>
+</Steps>
+
+The budget applies to one model in one workspace. Spend is counted from the start of the calendar month.
+
+### What happens when spend reaches the budget?
+
+- When spend reaches 80 percent of the budget, Helios sends one email alert for that month. The email goes to the workspace owner.
+- The panel shows a warning as spend approaches the threshold and shows **Budget exceeded** at 100 percent.
+- A model budget is an alert. It does not block requests. If you need a hard stop on API spend, set a daily budget limit on the API key. See [Authentication and keys](/docs/api/authentication-and-keys#what-limits-can-you-set-on-a-key).
+
+The budget covers one model. To set the wallet minimum that affects API requests, see [Minimum balance and budget alerts](/docs/billing/autopay-and-alerts).
+
+## Next steps
+
+- [Call models from code](/docs/api)
+- [How usage is billed across products](/docs/billing/how-usage-is-billed)
+
+<LastVerified date="2026-11-17" />

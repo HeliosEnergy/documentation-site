@@ -1,13 +1,75 @@
 ---
-title: Hello World
-description: Your first document
+title: Helios documentation
+description: "Guides for the Helios console: bare metal GPU nodes, Jupyter notebooks, AI inference, the API, your wallet and account access."
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+Helios builds GPU cloud clusters and high-density colocation for AI workloads. These docs explain how to use the Helios console at [console.helios.co](https://console.helios.co) and the products available through it.
 
-## What is Next?
+## What can I do in the console?
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
+  <Card
+    title="Bare metal"
+    href="/docs/bare-metal"
+    description="Request access to a node with 8 NVIDIA B300 GPUs and connect over SSH."
+  />
+  <Card
+    title="Jupyter notebooks"
+    href="/docs/notebooks"
+    description="JupyterLab on an RTX PRO 6000 node, allocated by a workspace admin. Allocation is currently unavailable in the console."
+  />
+  <Card
+    title="AI inference"
+    href="/docs/inference"
+    description="Browse models, test them in the playground and call them through the API."
+  />
+  <Card
+    title="API"
+    href="/docs/api"
+    description="Create API keys and call inference and bare metal endpoints."
+  />
+  <Card
+    title="Billing and wallet"
+    href="/docs/billing"
+    description="Add funds to a prepaid wallet and review transactions."
+  />
+  <Card
+    title="Accounts and access"
+    href="/docs/accounts/organizations-and-workspaces"
+    description="Organizations, workspaces, invitations and the Owner, Admin and Member roles."
+  />
 </Cards>
+
+For the full list of what is available, see [Product status](/docs/reference/product-status).
+
+## How do I get started?
+
+<Cards>
+  <Card
+    title="Quickstart"
+    href="/docs/getting-started"
+    description="Create an account, add funds and pick a product."
+  />
+  <Card
+    title="Create an account"
+    href="/docs/getting-started/create-account"
+    description="Sign up with email, Google or Microsoft and complete verification."
+  />
+  <Card
+    title="Choose a product"
+    href="/docs/getting-started/choose-a-product"
+    description="Compare bare metal, notebooks, inference and reserved GPU clusters."
+  />
+</Cards>
+
+## Need a reserved GPU cluster?
+
+Reserved GPU clusters are contracted capacity arranged with the Helios team rather than requested in the console. Read about [reserved clusters](/docs/bare-metal/reserved-clusters), see [pricing](https://www.helios.co/pricing), or [talk to our team](https://www.helios.co/contact). Helios also offers high-density [colocation](https://www.helios.co/colocation), which is covered on helios.co and not in these docs.
+
+## Where do I get help?
+
+- [Support](/docs/support) explains how to reach Helios.
+- [Troubleshooting](/docs/support/troubleshooting) covers sign-in, access and billing problems that customers run into.
+- [FAQ](/docs/support/faq) answers common questions.
+- [Glossary](/docs/reference/glossary) defines terms such as organization, workspace and access window.
+- You can also [contact Helios](https://www.helios.co/contact).

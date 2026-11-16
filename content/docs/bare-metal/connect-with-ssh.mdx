@@ -1,0 +1,92 @@
+---
+title: Connect to your node with SSH
+description: Start access in the console, copy the ssh command, connect to your B300 node and manage the SSH keys on your access.
+---
+
+After Helios installs your key and verifies SSH, you start access in the console and connect with the `ssh` command the console shows. Your access window begins when you start access.
+
+<Status state="live" />
+
+## What do you need?
+
+- An approved B300 request. See [Request bare metal access](/docs/bare-metal/request-access).
+- The private key that matches the public key you submitted, on the computer you connect from.
+- An organization Admin or Owner to select **Start access**. Other workspace members can see the access but cannot start it.
+
+## How do you start access and connect?
+
+<Steps>
+<Step>
+
+### Wait for setup to finish
+
+On the **Baremetal** page, the node card shows "Your node is being configured" while setup is in progress. The progress list reads **Key received**, **Node configuration** and **Access activation**. The console describes each stage, for example that your key is being installed and SSH access verified.
+
+</Step>
+<Step>
+
+### Select Start access
+
+When the node is ready, the **SSH access** panel reads "Your node is ready." Select **Start access to the node now**. This opens your access window. When the window runs out, access is revoked.
+
+</Step>
+<Step>
+
+### Copy the connection details
+
+The **SSH access** panel shows **Host**, **Port**, **User** and **Command**. Select the copy icon next to the command.
+
+</Step>
+<Step>
+
+### Run the command
+
+Paste the command into your terminal and point `-i` at your private key:
+
+```bash title="Terminal"
+ssh -i /path/to/your/private_key -p <port> <user>@<host>
+```
+
+Replace `<user>`, `<host>` and `<port>` with the values from the console. Use the values the console shows, not values from an earlier access.
+
+</Step>
+</Steps>
+
+If the console shows a host key fingerprint, compare it with the one SSH prints on your first connection before you accept the host key.
+
+Your private key file must be readable only by you:
+
+```bash title="Terminal"
+chmod 600 /path/to/your/private_key
+```
+
+## How do you manage SSH keys?
+
+When your access is active, the **Authorized keys** section lists the fingerprint and status of each key on the access. Each access can hold up to 20 keys that have not been revoked.
+
+- **Add a key** for another device or workspace member: paste the public key under **Add public key** and select **Add key**. The console accepts the same key types as a request: Ed25519, RSA (3072-bit or stronger) and ECDSA.
+- **Remove a key**: select the trash icon next to it. The console confirms with "SSH key removal requested" and the key shows as revocation pending until the removal is completed.
+
+To check which of your keys matches a fingerprint in the console, print the fingerprint of your public key:
+
+```bash title="Terminal"
+ssh-keygen -lf ~/.ssh/id_ed25519.pub
+```
+
+<Callout type="warn" title="Public keys only">
+Add public keys only. Anyone who holds a private key that matches a listed public key can connect while the access window is open, so remove keys for devices or people who should no longer have access.
+</Callout>
+
+## What if the connection fails?
+
+Check these in order:
+
+1. The console shows the node as active and you have selected **Start access**. Before that, SSH is not available.
+2. The access window has not ended. The node card shows **Time remaining** and the end time.
+3. `<user>`, `<host>` and `<port>` match the **SSH access** panel exactly.
+4. The private key you pass with `-i` is the pair of a key listed under **Authorized keys**.
+5. Run `ssh -v` with the same arguments and read the last lines of the output.
+
+If it still fails, see [Troubleshooting](/docs/support/troubleshooting).
+
+<LastVerified date="2026-11-17" />

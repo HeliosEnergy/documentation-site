@@ -1,0 +1,23 @@
+{
+  "title": "Helios Docs",
+  "pages": [
+    "index",
+    "---Getting started---",
+    "getting-started",
+    "---Accounts & access---",
+    "accounts",
+    "---Compute---",
+    "bare-metal",
+    "notebooks",
+    "---AI---",
+    "inference",
+    "api",
+    "---Billing---",
+    "billing",
+    "---Security & support---",
+    "security",
+    "support",
+    "---Reference---",
+    "reference"
+  ]
+}

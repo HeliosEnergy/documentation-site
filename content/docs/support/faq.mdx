@@ -1,0 +1,52 @@
+---
+title: FAQ
+description: Answers to common questions about Helios GPUs, access, billing, teams and support, with links to the pages that explain each one.
+---
+
+Short answers to questions customers ask most. Each answer links to the page with the detail.
+
+## What GPUs can I use today?
+
+You can use NVIDIA B300 on bare metal.
+
+- **B300 bare metal.** Request access in the console. Each node has eight B300 GPUs. See [Bare metal](/docs/bare-metal).
+- **RTX PRO 6000 notebooks.** Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as **At Capacity**. [Contact the Helios team](https://www.helios.co/contact) for access. See [Jupyter notebooks](/docs/notebooks).
+- **GB300 NVL72, RTX PRO 6000 bare metal and reserved GPU clusters.** These are not yet available in the console. [Contact the Helios team](https://www.helios.co/contact) to discuss them. See [Reserved clusters](/docs/bare-metal/reserved-clusters) and [Product status](/docs/reference/product-status).
+
+## How do I get access to a node?
+
+Submit an SSH public key in the console when you request bare metal access. After Helios approves the request and sets up the node, you select **Start access** and the console shows the host, port, user and an SSH command. Share only the public key. Keep the private key on your machine. See [Request bare metal access](/docs/bare-metal/request-access) and [Connect with SSH](/docs/bare-metal/connect-with-ssh).
+
+## Is there a CLI or an SDK?
+
+You work with Helios through the [console](https://console.helios.co), the REST API and SSH to your bare metal node. For inference, tools that let you set the base URL of an OpenAI-style API can be pointed at the Helios API, for supported features. See [API](/docs/api).
+
+## Can I deploy containers or Kubernetes?
+
+Not in the console. See [Product status](/docs/reference/product-status) for what is available.
+
+## How am I billed?
+
+It depends on the product. Bare metal usage is recorded by the hour, pro-rated to elapsed time, starting at **Start access**. For inference, the model card shows pricing where a model has pricing. Committed or reserved capacity is arranged with the Helios team. You fund a wallet by card. See [How usage is billed](/docs/billing/how-usage-is-billed) and the [pricing page](https://www.helios.co/pricing).
+
+## How do I add money to my wallet?
+
+An Admin or Owner opens **Wallet** in the console and adds funds by card. See [Add funds](/docs/billing/add-funds).
+
+## Can I invite my team?
+
+Yes. An Admin or Owner can invite people by email from Users & Access and give them the role Admin or Member. You can also invite guests from another organization into a workspace. See [Users and access](/docs/accounts/users-and-access) and [Roles](/docs/accounts/roles).
+
+## Can I use more than one workspace?
+
+Yes. An organization can have several workspaces, and each workspace has its own wallet. An Owner creates workspaces from the workspace switcher. See [Organizations and workspaces](/docs/accounts/organizations-and-workspaces).
+
+## What about networking, storage and security questions?
+
+These depend on your configuration, so they are not answered in the console docs. [Contact the Helios team](https://www.helios.co/contact) and describe what you plan to run. The [Helios FAQ](https://www.helios.co/faq) covers many of the questions that buyers ask before they sign. For steps you can take to protect your own account, see [Security](/docs/security).
+
+## Where do I get help?
+
+See [Support](/docs/support) for how to reach the team and what to include, and [Troubleshooting](/docs/support/troubleshooting) for common problems.
+
+<LastVerified date="2026-11-17" />

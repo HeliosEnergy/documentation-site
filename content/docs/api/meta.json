@@ -1,0 +1,11 @@
+{
+  "title": "API",
+  "pages": [
+    "index",
+    "authentication-and-keys",
+    "scopes",
+    "inference-endpoints",
+    "bare-metal-endpoints",
+    "errors-and-limits"
+  ]
+}

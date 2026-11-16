@@ -1,15 +1,456 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
-:root {
-  --helios-color: hsl(25, 60%, 65%);
+/* ---------- fonts (families come from next/font variables set on <html>) ---------- */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-label: var(--font-space-mono), ui-monospace, monospace;
+  /* Code stays on the system mono stack for legibility. Space Mono is label chrome only. */
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
 }
 
+/* ---------- radii: brand tokens 24 / 22 / 20 ---------- */
+@theme {
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 1.5rem;
+}
+
+/* ---------- color tokens, light ---------- */
+@theme {
+  --color-fd-background: #fbfaf9;
+  --color-fd-foreground: #17171c;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #17171c;
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #17171c;
+  --color-fd-border: #e8e5df;
+  --color-fd-muted: color-mix(in srgb, #e8e5df 45%, #fbfaf9);
+  --color-fd-muted-foreground: #54545c;
+  --color-fd-secondary: color-mix(in srgb, #e8e5df 45%, #fbfaf9);
+  --color-fd-secondary-foreground: #17171c;
+  --color-fd-accent: color-mix(in srgb, #17171c 7%, transparent);
+  --color-fd-accent-foreground: #17171c;
+  --color-fd-primary: #d63900;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-ring: #d63900;
+
+  /* Helios tokens */
+  --color-helios-cta: #e68a00; /* FILL ONLY. Label must be helios-cta-fg. Never text. */
+  --color-helios-cta-fg: #17171c;
+  --color-helios-vivid: #d63900; /* small marks (icons) */
+  --color-helios-panel: #ffffff;
+  --color-helios-table-head: #000000;
+  --color-helios-table-head-fg: #ffffff;
+}
+
+/* Callout colors: Fumadocs ships blue and green, the brand has neither. */
+@theme static {
+  --color-fd-info: #54545c;
+  --color-fd-warning: #d63900;
+  --color-fd-error: #c22424;
+  --color-fd-success: #17171c;
+}
+
+/* ---------- color tokens, dark ---------- */
 .dark {
-  --helios-color: hsl(25, 70%, 75%);
+  --color-fd-background: #000000;
+  --color-fd-foreground: #fafafa;
+  --color-fd-card: #121212;
+  --color-fd-card-foreground: #fafafa;
+  --color-fd-popover: #121212;
+  --color-fd-popover-foreground: #fafafa;
+  --color-fd-border: #1f1f1f;
+  --color-fd-muted: #121212;
+  --color-fd-muted-foreground: #a1a1a1;
+  --color-fd-secondary: #121212;
+  --color-fd-secondary-foreground: #fafafa;
+  --color-fd-accent: color-mix(in srgb, #fafafa 8%, transparent);
+  --color-fd-accent-foreground: #fafafa;
+  --color-fd-primary: #ff9147;
+  --color-fd-primary-foreground: #000000;
+  --color-fd-ring: #ff9147;
+
+  --color-helios-cta: #f9cb15; /* gold: CTA fill and the single glow only */
+  --color-helios-cta-fg: #000000;
+  --color-helios-vivid: #ff6b35;
+  --color-helios-panel: #0a0a0a;
+  --color-helios-table-head: #1f1f1f;
+  --color-helios-table-head-fg: #fafafa;
+
+  --color-fd-info: #a1a1a1;
+  --color-fd-warning: #ff9147;
+  --color-fd-error: #ef4343;
+  --color-fd-success: #fafafa;
 }
 
-.helios {
-  --color-fd-primary: var(--helios-color);
+/* Keep the sidebar muted tokens on the dark palette (Fumadocs neutral overrides are not imported). */
+.dark #nd-sidebar {
+  --color-fd-muted: #121212;
+  --color-fd-secondary: #121212;
+}
+
+/* ---------- base ---------- */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-family: var(--font-sans);
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip; /* no page-level horizontal scroll; wide content scrolls in its own container */
+}
+::selection {
+  background: color-mix(in srgb, var(--color-fd-primary) 28%, transparent);
+}
+
+/* Focus: one visible ring for everything. Unlayered, so it beats Fumadocs' focus-visible:outline-none. */
+:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -5rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  border-radius: 22px;
+  background: var(--color-fd-foreground);
+  color: var(--color-fd-background);
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+/* ---------- label / kicker signature: Space Mono, uppercase, wide-tracked ---------- */
+@utility kicker {
+  font-family: var(--font-label);
+  font-weight: 700; /* Space Mono ships 400 and 700 only */
+  font-size: 0.75rem;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-fd-muted-foreground);
+}
+
+/* ---------- buttons ---------- */
+@layer components {
+  .helios-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem; /* 44px target */
+    padding: 0.5rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 22px;
+    font-family: var(--font-label);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .helios-btn--primary {
+    background: var(--color-helios-cta);
+    color: var(--color-helios-cta-fg);
+  }
+  .helios-btn--primary:hover {
+    background: color-mix(in oklab, var(--color-helios-cta) 80%, white);
+  }
+  .helios-btn--outline {
+    border-color: var(--color-fd-foreground);
+    color: var(--color-fd-foreground);
+    background: transparent;
+  }
+  .helios-btn--outline:hover {
+    background: var(--color-fd-accent);
+  }
+  .helios-btn--ghost {
+    color: var(--color-fd-foreground);
+    background: transparent;
+  }
+  .helios-btn--ghost:hover {
+    background: var(--color-fd-accent);
+  }
+  /* Compact variant for dense chrome (sidebar header, mobile bar). Primary CTAs on pages use the default 44px. */
+  .helios-btn--sm {
+    min-height: 2.25rem;
+    padding: 0.25rem 0.875rem;
+    font-size: 0.75rem;
+  }
+  @media (pointer: coarse) {
+    .helios-btn--sm {
+      min-height: 2.75rem;
+    }
+  }
+}
+/* The ONE glow: hero primary CTA, dark theme only. One element per page. */
+.dark .helios-btn--glow {
+  box-shadow: 0 0 60px -15px hsl(48 95% 53% / 0.3);
+}
+
+/* ---------- cards ---------- */
+.helios-card {
+  background: var(--color-fd-card);
+  border: 1px solid var(--color-fd-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+a.helios-card {
+  transition: border-color 0.15s ease;
+}
+a.helios-card:hover {
+  border-color: color-mix(in srgb, var(--color-fd-foreground) 40%, transparent);
+}
+
+/* ---------- docs typography ---------- */
+#nd-page h1,
+#nd-page .prose :is(h1, h2, h3, h4) {
+  font-family: var(--font-heading);
+  color: var(--color-fd-foreground);
+  text-wrap: balance;
+}
+#nd-page h1 {
+  font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+#nd-page .prose h2 {
+  font-size: 1.75rem;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 3rem;
+}
+#nd-page .prose h3 {
+  font-size: 1.375rem;
+  line-height: 1.2;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+#nd-page .prose h4 {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+/* Page description under the title: Inter 300, secondary color */
+#nd-page h1 + p {
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--color-fd-muted-foreground);
+  max-width: 46rem;
+}
+
+/* Card titles are h3 inside prose: no section spacing */
+#nd-page .prose [data-card] :is(h2, h3, h4) {
+  margin-top: 0;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+/* Reading measure for paragraphs and lists; tables, code and callouts use full width. */
+#nd-page .prose :is(p, li) {
+  max-width: 75ch;
+}
+#nd-page .prose {
+  --tw-prose-body: var(--color-fd-foreground);
+  font-size: 1rem;
+}
+
+/* Links: ink text, orange underline. Orange link text fails contrast on the light ground. */
+#nd-page .prose a:not([data-card]) {
+  color: var(--color-fd-foreground);
+  text-decoration-color: var(--color-fd-primary);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3.5px;
+}
+#nd-page .prose a:not([data-card]):hover {
+  opacity: 1;
+  text-decoration-thickness: 2.5px;
+}
+
+/* Inline code: small chip, system mono */
+#nd-page .prose :not(pre) > code {
+  font-size: 0.875em;
+  padding: 0.125em 0.4em;
+  border-radius: 6px;
+  background: var(--color-fd-muted);
+  border: 1px solid var(--color-fd-border);
+}
+
+/* Code blocks: card surface, 24px radius */
+figure.shiki {
+  border-radius: var(--radius-xl);
+  box-shadow: none;
+}
+figure.shiki pre {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Tables: black header row, white mono-uppercase labels.
+   Fumadocs wraps tables in an overflow-auto container, so wide tables scroll inside it. */
+#nd-page .prose table {
+  background: var(--color-fd-card);
+}
+.helios-table-wrap {
+  border-radius: var(--radius-xl);
+}
+#nd-page .prose thead th {
+  background: var(--color-helios-table-head);
+  color: var(--color-helios-table-head-fg);
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+}
+/* Inline code inside a header cell: keep the header's text colour, not the light chip. */
+#nd-page .prose thead th code {
+  background: transparent;
+  border-color: color-mix(in srgb, currentColor 40%, transparent);
+  color: inherit;
+}
+#nd-page .prose tbody td {
+  padding: 0.75rem 1rem;
+}
+#nd-page .prose tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--color-fd-muted) 55%, transparent);
+}
+
+/* Callouts: flat card, no shadow */
+#nd-page div[style*='--callout-color'] {
+  box-shadow: none;
+  background: var(--color-fd-card);
+}
+
+/* ---------- sidebar / TOC ---------- */
+#nd-sidebar {
+  background-color: var(--color-helios-panel);
+}
+#nd-sidebar :is(a, button) {
+  border-radius: 0.75rem;
+}
+#nd-sidebar a[data-active='true'],
+#nd-sidebar a[data-active='true']:hover {
+  color: var(--color-fd-foreground); /* ink text, not orange text (contrast on the tint) */
+  background: var(--color-fd-accent);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--color-fd-primary);
+}
+#nd-toc a[data-active='true'] {
+  color: var(--color-fd-foreground);
+  font-weight: 600;
+}
+/* Section titles in the sidebar tree get the label treatment */
+#nd-sidebar p.inline-flex {
+  display: flex;
+  color: var(--color-fd-muted-foreground);
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The docs sidebar is fixed on desktop, so offset the site footer by its width (Fumadocs: 268px md, 286px lg). */
+@media (min-width: 768px) {
+  body:has(#nd-docs-layout) .site-footer {
+    padding-inline-start: 268px;
+  }
+}
+@media (min-width: 1024px) {
+  body:has(#nd-docs-layout) .site-footer {
+    padding-inline-start: 286px;
+  }
+}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- forced colors / print ---------- */
+@media (forced-colors: active) {
+  .helios-badge,
+  .helios-card {
+    border: 1px solid CanvasText;
+  }
+  .helios-btn--primary {
+    border-color: ButtonText;
+  }
+}
+@media print {
+  #nd-sidebar,
+  #nd-toc,
+  #nd-nav,
+  #nd-subnav,
+  #nd-tocnav,
+  footer.site-footer,
+  .skip-link {
+    display: none !important;
+  }
+  #nd-page .prose thead th {
+    background: #000 !important;
+    color: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
+
+/* ---------- accessibility ---------- */
+/* Fumadocs keeps a collapsed-sidebar toolbar in the DOM at opacity 0. Take its buttons out of the
+   tab order while it is invisible (the classes drop off when the sidebar is collapsed). */
+#nd-docs-layout > div.fixed.pointer-events-none.opacity-0 button {
+  visibility: hidden;
+}
+
+/* Touch targets: 44px minimum for header chrome and page controls on touch devices. */
+@media (pointer: coarse) {
+  #nd-subnav button,
+  #nd-subnav a,
+  [data-theme-toggle],
+  #nd-tocnav button,
+  #nd-page figure button,
+  .helios-page-actions button,
+  #nd-page [role='tab'] {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

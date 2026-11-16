@@ -1,13 +1,9 @@
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions, linkItems } from '@/lib/layout.shared';
+import { baseOptions, homeLinks } from '@/lib/layout.shared';
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <HomeLayout
-      {...baseOptions()}
-      links={linkItems}
-      className="helios"
-    >
+    <HomeLayout {...baseOptions({ kicker: true })} links={homeLinks}>
       {children}
     </HomeLayout>
   );

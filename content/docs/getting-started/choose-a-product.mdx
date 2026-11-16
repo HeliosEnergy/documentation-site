@@ -1,0 +1,47 @@
+---
+title: Choose a product
+description: Compare Helios bare metal, Jupyter notebooks, AI inference and reserved GPU clusters to decide which one fits your workload.
+---
+
+Helios offers three products in the console, plus reserved GPU clusters arranged through the Helios team. Use bare metal for a full node over SSH, Jupyter notebooks for a browser-based GPU environment, and AI inference for models you call without managing hardware.
+
+## Which product fits my workload?
+
+| If you want to | Choose | Status |
+|---|---|---|
+| Run your own software on a full 8-GPU node with SSH access | [Bare metal](/docs/bare-metal) | Live |
+| Work in JupyterLab on an RTX PRO 6000 GPU | [Jupyter notebooks](/docs/notebooks) | Allocation currently unavailable, shown as At Capacity |
+| Call hosted models from the playground or the API | [AI inference](/docs/inference) | Live |
+| Contract GPU capacity for a longer term | [Reserved GPU clusters](/docs/bare-metal/reserved-clusters) | Arranged with the Helios team |
+
+## Bare metal
+
+<Status state="live" />
+
+Bare metal gives you a node with 8 NVIDIA B300 GPUs and SSH access. You request access in the console and paste an SSH public key. Helios approves the request and installs your key, then an organization Admin or Owner selects **Start access** and you connect. Bare metal usage is recorded by the hour, pro-rated to elapsed time, starting at **Start access**. See [Billing and access windows](/docs/bare-metal/billing-and-access-windows).
+
+Choose bare metal when you need a whole node and direct SSH access. Read [Bare metal](/docs/bare-metal) and [Request access](/docs/bare-metal/request-access).
+
+## Jupyter notebooks
+
+Jupyter notebooks give you JupyterLab on an RTX PRO 6000 node. A workspace admin allocates a node and you open it with a URL and token. Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as **At Capacity**. [Contact the Helios team](https://www.helios.co/contact) for access.
+
+Choose notebooks for interactive work in JupyterLab. Read [Jupyter notebooks](/docs/notebooks).
+
+## AI inference
+
+<Status state="live" />
+
+AI inference lets you use hosted models without managing GPUs. You browse the model marketplace, try models in the playground, review request history and call models through the API. Inference needs funds in your workspace wallet. See [Add funds](/docs/billing/add-funds) and [How usage is billed](/docs/billing/how-usage-is-billed).
+
+Choose inference when you want results from a model and not a machine. Read [AI inference](/docs/inference) and the [API overview](/docs/api).
+
+## Reserved GPU clusters
+
+Reserved GPU clusters are contracted capacity for a defined term. You arrange them with the Helios team and cannot request them in the console. The console lists GB300 NVL72 and RTX PRO 6000 bare metal as contact-us options. See [Reserved clusters](/docs/bare-metal/reserved-clusters), [pricing](https://www.helios.co/pricing) and [contact Helios](https://www.helios.co/contact).
+
+## What if none of these fit?
+
+[Product status](/docs/reference/product-status) lists what is available in the console. To discuss anything else, [contact Helios](https://www.helios.co/contact).
+
+<LastVerified date="2026-11-17" />

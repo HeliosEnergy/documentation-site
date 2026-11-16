@@ -1,0 +1,49 @@
+---
+title: Roles
+description: What the Owner, Admin and Member roles can do in the Helios console, and how roles apply to organizations and workspaces.
+---
+
+Helios has three roles: Owner, Admin and Member. Owner is the highest role and Member is the lowest. Each role can do different things, as the table below shows.
+
+## How do roles work?
+
+- **Owner.** The person who signs up for an organization is its Owner. Owner is assigned when the organization is created and cannot be assigned or changed on the Users & Access page.
+- **Admin.** Admins manage people and funding, and can allocate notebook nodes when allocation is available, as the table below shows. An Admin can give someone the Admin or Member role.
+- **Member.** Members use the products in a workspace. Members cannot manage people or funding.
+
+You hold a role in the organization and, separately, a role in each workspace you can access. The **Users & Access** page shows both. In the table below, Admin means Admin or Owner at the relevant level, and Owner means Owner.
+
+You can manage only people whose role is lower than yours. Nobody can change a person with an equal or higher role. There is no Viewer role and no custom roles.
+
+A guest, who is invited into a workspace from a different organization, holds only a workspace role. See [Users and access](/docs/accounts/users-and-access).
+
+## What can each role do?
+
+| Action | Member | Admin | Owner |
+|---|---|---|---|
+| Use AI inference, the playground and request history | Yes | Yes | Yes |
+| Request bare metal access and manage your own SSH keys | Yes | Yes | Yes |
+| Start bare metal access | No | Yes | Yes |
+| View Jupyter notebook nodes and their status | Yes | Yes | Yes |
+| Allocate, refresh and deallocate Jupyter notebook nodes | No | Yes | Yes |
+| View the wallet balance and transactions | Yes | Yes | Yes |
+| Add funds and change wallet settings | No | Yes | Yes |
+| View members and invitations | No | Yes | Yes |
+| Invite people, and resend or revoke invitations | No | Yes | Yes |
+| Change roles and remove people with a lower role | No | Yes | Yes |
+
+Creating a workspace requires the Owner role.
+
+Deleting a workspace and transferring ownership are not available in the console.
+
+## How do I change a role?
+
+Follow [How do I change someone's role?](/docs/accounts/users-and-access#how-do-i-change-someones-role) on the Users and access page. If you need an action that your role does not allow, ask an Admin or Owner in your organization.
+
+## Related guides
+
+- [Organizations and workspaces](/docs/accounts/organizations-and-workspaces)
+- [Add funds](/docs/billing/add-funds)
+- [Jupyter notebooks](/docs/notebooks)
+
+<LastVerified date="2026-11-17" />

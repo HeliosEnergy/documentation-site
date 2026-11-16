@@ -1,0 +1,82 @@
+---
+title: Users and access
+description: Invite people to your Helios organization, change roles, grant or revoke workspace access, and remove members from the Users & Access page.
+---
+
+You manage people on the **Users & Access** page. Open it from the user menu at the bottom of the console sidebar. Viewing members and sending invitations requires the Admin or Owner role. See [Roles](/docs/accounts/roles) for what each role can do.
+
+<Callout type="info">
+  The Users & Access item does not appear in the user menu if you are a guest in another organization's workspace.
+</Callout>
+
+## What does the Users & Access page show?
+
+- **Members** lists everyone in the organization. Each row shows the person's **Organization role** and their access to the workspace you are viewing, labeled **Enabled** with a workspace role or **No access**. A search box filters by name, email or role.
+- **Invitations** lists invitations you sent, with a status of **Awaiting acceptance**, **Accepted**, **Revoked** or **Expired**. This section appears when there are invitations to show.
+
+The page works on one workspace at a time. The workspace name appears beside the page title, so check it before you make a change.
+
+## How do I invite someone?
+
+<Steps>
+  <Step>
+    Open **Users & Access** and select **Invite user**.
+  </Step>
+  <Step>
+    Enter the person's email address.
+  </Step>
+  <Step>
+    Choose a role, **Member** or **Admin**. The role applies to both the organization and the workspace you are viewing.
+  </Step>
+  <Step>
+    Select **Send invitation**. Helios emails the person a link.
+  </Step>
+</Steps>
+
+The person opens the link and accepts the invitation. If they are new to Helios, they create an account from the invitation page. If they already have a Helios account, they sign in with the invited email address. An invitation works only for the email address it was sent to. If the person signs in with a different address, the console tells them the invitation was issued to a different email address.
+
+If the invited email address already belongs to an account in a different organization, the person joins your workspace as a guest. A guest works inside that workspace and does not become a member of your organization.
+
+## How do I resend or revoke an invitation?
+
+In the **Invitations** list:
+
+- Select **Resend** on an invitation that is awaiting acceptance or has expired. Helios sends a new link and extends the time to accept.
+- Select **Revoke** on an invitation that is awaiting acceptance. The link stops working.
+
+Each pending invitation shows its expiry date. If someone reports that their link no longer works, resend the invitation. The invitation page tells the recipient when an invitation is expired, revoked or already used and asks them to request a new one.
+
+## How do I change someone's role?
+
+<Steps>
+  <Step>
+    Find the person in **Members**.
+  </Step>
+  <Step>
+    Select their role badge, or open the row's actions menu and choose **Change organization role** or **Edit access**.
+  </Step>
+  <Step>
+    Choose **Member** or **Admin** and select **Save role**.
+  </Step>
+</Steps>
+
+**Organization role** applies across the organization. The workspace role, shown next to **Enabled**, applies to the workspace you are viewing. You can change roles only for people whose role is lower than yours. The Owner role cannot be assigned or changed on this page.
+
+## How do I give an existing member access to a workspace?
+
+If a member has **No access** to the workspace you are viewing, select **Grant access** in their row. To switch to a different workspace first, use the workspace switcher.
+
+## How do I remove someone?
+
+Open the row's actions menu and choose one of these:
+
+- **Revoke** removes the person's access to the workspace you are viewing, including its resources, wallet and billing. They stay in the organization.
+- **Remove** removes the person from the organization and all of its workspaces.
+
+The console asks you to type the person's email address to confirm. Then select **Revoke access** or **Remove member**.
+
+## What if something does not work?
+
+See [Troubleshooting](/docs/support/troubleshooting) for invitation and access problems.
+
+<LastVerified date="2026-11-17" />
