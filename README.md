@@ -1,45 +1,79 @@
-# helios-documentation
+# Helios documentation
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+Source for the Helios customer documentation: how to use the Helios console
+(bare metal GPU access, Jupyter notebooks, AI inference and API, wallet and
+billing, accounts and support). Built with Next.js 15, Fumadocs and Tailwind 4.
 
-Run development server:
+This repository is public. Read [Content rules](#content-rules) before you edit.
+
+## Run locally
+
+Requires Node.js 20 or later and npm.
 
 ```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # production build, also generates the search index and llms files
+npm run start   # serve the production build
+npm run lint
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+Set `NEXT_PUBLIC_SITE_URL` to the public origin of the deployment so the
+sitemap, canonical URLs, Open Graph tags and `/llms.txt` use absolute URLs.
+If it is unset, `lib/site.ts` falls back to a placeholder.
 
-## Explore
+## Layout
 
-In the project, you can see:
+```
+content/docs/        MDX pages. One folder per sidebar section, each with a meta.json
+content/docs/meta.json   Root sidebar order, with ---Section--- separators
+app/                 Routes: home page, docs, search API, sitemap, robots, llms.txt, llms-full.txt
+components/brand/    Logo, Status, LastVerified, footer, table wrapper
+lib/                 Site constants (site.ts), layout config, content source, llms text
+public/logos/        Brand logos
+mdx-components.tsx   Components available in MDX without imports
+```
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
+Generated, not committed: `.source/` (content index) and `.next/`.
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+## Add a page
 
-### Fumadocs MDX
+1. Create `content/docs/<section>/<slug>.mdx` with frontmatter:
 
-A `source.config.ts` config file has been included, you can customise different options like frontmatter schema.
+   ```mdx
+   ---
+   title: Request bare metal access
+   description: One plain, factual sentence of 160 characters or fewer.
+   ---
+   ```
 
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
+   `description` is used for the meta description, search and `/llms.txt`.
+2. Open the page with one or two sentences that answer the question directly.
+3. Add the slug to that folder's `meta.json` `pages` array (order is sidebar order).
+4. Run `npm run dev` and check the page, then `npm run build`.
 
-## Learn More
+Pages are also served as plain Markdown at `<page URL>.mdx`, and every page is
+listed in `/llms.txt` with its full text in `/llms-full.txt`.
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
+### MDX components
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.vercel.app) - learn about Fumadocs
+Available in every page with no import:
+
+- `Callout` (`type="info"`, `"warn"`, `"error"`), `Cards` / `Card`, `Steps` / `Step`,
+  `Tabs` / `Tab`, `Accordions` / `Accordion`, fenced code blocks with `title=`, plain Markdown tables.
+- `<Status state="live" />` or `"unavailable"`: a labelled availability badge.
+- `<LastVerified date="YYYY-MM-DD" />`: add only after checking the page against the product.
+
+Do not use raw HTML tables, emoji, or raw Tailwind in MDX.
+
+## Content rules
+
+- Document only what a customer can do in the console today, and verify each
+  fact against the product before you write it.
+- Link to https://www.helios.co/pricing for prices. Do not put prices, secrets
+  or tokens in this repository.
+- Mark products that are not available with `Status`.
+- Link only to destinations that exist: `console.helios.co` and the helios.co
+  pages for pricing, clusters, colocation, contact, FAQ and terms.
+
+Open an issue or pull request on a branch. Do not commit to `main` directly.

@@ -1,0 +1,39 @@
+---
+title: Jupyter notebooks
+description: JupyterLab on an NVIDIA RTX PRO 6000 node, allocated by a workspace admin. Allocation is currently unavailable in the console; contact the Helios team.
+---
+
+Jupyter Notebooks gives you a dedicated NVIDIA RTX PRO 6000 GPU node running JupyterLab. A workspace Admin or Owner allocates a node from the console and gets a Jupyter URL that includes an access token.
+
+<Callout type="warn" title="Allocation is currently unavailable">
+Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as **At Capacity**. [Contact the Helios team](https://www.helios.co/contact) for access.
+</Callout>
+
+## How does it work?
+
+- Notebooks are **admin-allocated**. A workspace Admin or Owner allocates a node. Members of the workspace can see the page but cannot allocate, refresh or deallocate.
+- Each user can hold one active notebook at a time.
+- After allocation, the console shows your Jupyter URL. You open it in a browser to use JupyterLab. The URL contains an access token.
+- You can refresh the notebook to rotate its token, download your workspace, and deallocate it when you are done.
+- Notebook storage is temporary. Download anything you want to keep before you stop using a notebook. See [Use a Jupyter notebook](/docs/notebooks/use-jupyter).
+
+## Who is this for?
+
+Teams that want an interactive GPU environment in the browser for development and experiments. For SSH access to a full 8-GPU node, see [Bare metal](/docs/bare-metal). For API-based model use, see [AI inference](/docs/inference).
+
+## Pricing
+
+Notebook pricing is shown on the card in the console. Confirm billing terms for your workspace with your Helios contact before you plan a long-running workload.
+
+## Next steps
+
+<Cards>
+  <Card title="Use a Jupyter notebook" href="/docs/notebooks/use-jupyter">
+    The console flow: allocate, open, refresh, download and deallocate.
+  </Card>
+  <Card title="Troubleshooting" href="/docs/support/troubleshooting">
+    What to do when a notebook shows At Capacity or will not open.
+  </Card>
+</Cards>
+
+<LastVerified date="2026-11-17" />

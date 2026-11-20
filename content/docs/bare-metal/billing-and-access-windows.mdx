@@ -1,0 +1,54 @@
+---
+title: Billing and access windows
+description: When bare metal usage recording and your access window start, how usage accrues by the hour, and how access ends.
+---
+
+Bare metal usage is recorded by the hour, pro-rated to elapsed time, starting at **Start access**. Your access window starts at the same time, not when you submit or when Helios approves the request.
+
+<Status state="live" />
+
+## When do usage recording and the access window start?
+
+| Step | Window running | Usage recorded |
+|---|---|---|
+| You submit a request | No | No |
+| Helios approves it and sets up the node | No | No |
+| Helios installs your key and verifies SSH | No | No |
+| You select **Start access** | Yes | Yes |
+
+Time spent waiting for approval or setup is not counted. Time between setup finishing and you selecting **Start access** is not deducted from your window either.
+
+## How is usage calculated?
+
+The console shows the hourly rate for your access. The node card shows:
+
+- **Time remaining** in the window.
+- **Accrued cost** so far.
+- **Hourly rate** for your access.
+- **Rental window**, with the start time and the end time.
+
+Usage is charged to your workspace wallet. See [How usage is billed](/docs/billing/how-usage-is-billed).
+
+Hourly rates are not listed in these docs. See [pricing on helios.co](https://www.helios.co/pricing), or ask your Helios contact.
+
+## When does access end?
+
+Your window has an end time. Access ends when the window closes. It can end earlier if the spend limit set for the access is reached. The console shows the end time next to **Time remaining**, and the **SSH access** panel notes that access is revoked when the timer runs out.
+
+When access ends:
+
+- You can no longer connect to the node over SSH.
+- The monitoring pane stops updating.
+- The access moves from **Active Access** to **History**, which lists the node, the window and the total cost.
+
+Download or copy anything you need from the node before the window closes. Plan for the end time shown in the console.
+
+## Will you be warned before access ends?
+
+Helios may send usage notification emails as your access window or its spend limit is used up. Do not rely on an email alone. Check **Time remaining** on the node card during long sessions.
+
+## What if you need more time or more nodes?
+
+[Contact the Helios team](https://www.helios.co/contact), or your Helios contact, before the window ends. For committed capacity over longer periods, see [Reserved clusters](/docs/bare-metal/reserved-clusters).
+
+<LastVerified date="2026-11-17" />

@@ -1,0 +1,52 @@
+---
+title: API key scopes
+description: The scopes you can give a Helios API key, what each one allows and which endpoints each one unlocks.
+---
+
+A scope controls which API endpoints a key can call. You choose scopes when you create a key. If a key lacks the scope an endpoint needs, the API returns HTTP 403.
+
+<Status state="live" />
+
+## Which scopes can you choose?
+
+These are the scopes that apply to the endpoints in these docs. A key must have at least one scope.
+
+| Scope | Console label | What it allows |
+|---|---|---|
+| `inference:read` | Inference read | List models, read the status of an inference request, read usage statistics and history |
+| `inference:write` | Inference write | Submit inference requests (chat, image, text, speech, multimodal) and cancel pending requests |
+| `baremetal:availability:read` | Baremetal availability | Check bare metal availability |
+| `baremetal:grants:read` | Read Baremetal grants | List and read bare metal allocations |
+| `baremetal:access:read` | Reveal Baremetal access | Read SSH connection details for an active allocation |
+| `baremetal:access:write` | Manage Baremetal SSH keys | Submit and revoke SSH public keys on an allocation |
+| `baremetal:usage:read` | Read Baremetal usage | Read usage and cost for an allocation |
+
+A new key created from the full form starts with `inference:read` and `inference:write` selected. Keys created from the **API** tab on a model page get the same two scopes. Give a key only the scopes it needs.
+
+<Callout type="warn" title="Treat bare metal access scopes as sensitive">
+`baremetal:access:read` returns the SSH connection details for a node. `baremetal:access:write` changes which SSH public keys can sign in to it. The console warns when you select `baremetal:access:read`. Give these scopes only to keys that need them, and store those keys more carefully than inference keys.
+</Callout>
+
+## Which endpoint needs which scope?
+
+| Endpoint | Scope |
+|---|---|
+| `POST /inference/chat/completions` | `inference:write` |
+| `POST /inference/image/{model}`, `/llm/{model}`, `/tts/{model}`, `/stt/{model}`, `/multimodal/{model}` | `inference:write` |
+| `DELETE /inference/requests/{id}` | `inference:write` |
+| `GET /inference/requests/{id}` | `inference:read` |
+| `GET /models`, `GET /models/{model}` | `inference:read` |
+| `GET /usage/`, `/usage/models`, `/usage/history` | `inference:read` |
+| `GET /baremetal/availability` | `baremetal:availability:read` |
+| `GET /baremetal/grants`, `GET /baremetal/grants/{grant_id}` | `baremetal:grants:read` |
+| `GET /baremetal/grants/{grant_id}/access` | `baremetal:access:read` |
+| `PUT /baremetal/grants/{grant_id}/ssh-key`, `POST .../ssh-keys`, `DELETE .../ssh-keys/{access_request_id}` | `baremetal:access:write` |
+| `GET /baremetal/grants/{grant_id}/usage` | `baremetal:usage:read` |
+
+## How do you pick scopes?
+
+- Start from what the application does. A service that only sends chat requests needs `inference:write`. Add `inference:read` only if it lists models or reads status and usage.
+- Create separate keys for inference and bare metal work.
+- You cannot change a key's scopes after creation. To change them, create a new key and [revoke the old one](/docs/api/authentication-and-keys#how-do-you-revoke-a-key).
+
+<LastVerified date="2026-11-17" />

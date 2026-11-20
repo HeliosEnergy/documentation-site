@@ -1,0 +1,192 @@
+---
+title: Bare metal endpoints
+description: Check availability, read allocations and usage, read connection details and manage SSH public keys for bare metal with the Helios API.
+---
+
+The bare metal endpoints let a script read the state of your bare metal access and manage the SSH public keys on it. Starting access and the approval-based request flow stay in the console.
+
+<Status state="live" />
+
+Paths, scope names and response fields use the word "grants" for allocations.
+
+Paths are relative to the [base URL](/docs/api). Examples use `HELIOS_API_BASE` and `HELIOS_API_KEY` as set in the API overview. `GRANT_ID` is the `id` of an allocation.
+
+## What can you do with the bare metal API?
+
+| Endpoint | What it does | Scope |
+|---|---|---|
+| `GET /baremetal/availability` | Counts of nodes for a product | `baremetal:availability:read` |
+| `GET /baremetal/grants` | List allocations in the key's workspace | `baremetal:grants:read` |
+| `GET /baremetal/grants/{grant_id}` | Read one allocation | `baremetal:grants:read` |
+| `POST /baremetal/grants/{grant_id}/ssh-keys` | Submit an SSH public key | `baremetal:access:write` |
+| `DELETE /baremetal/grants/{grant_id}/ssh-keys/{access_request_id}` | Ask Helios to revoke an SSH public key | `baremetal:access:write` |
+| `GET /baremetal/grants/{grant_id}/access` | Read SSH connection details | `baremetal:access:read` |
+| `GET /baremetal/grants/{grant_id}/usage` | Read usage and cost | `baremetal:usage:read` |
+
+The API does not start access. Starting the access window is a console action. See [Connect with SSH](/docs/bare-metal/connect-with-ssh). The API also cannot approve requests or end an allocation.
+
+<Callout type="warn" title="These keys are sensitive">
+Keys with `baremetal:access:read` or `baremetal:access:write` can read connection details or change which SSH public keys can sign in to a node. Treat them like production credentials. See [Scopes](/docs/api/scopes).
+</Callout>
+
+Two behaviours apply to every call on this page:
+
+- The wallet check from the [API overview](/docs/api) applies. With a low wallet balance, calls return HTTP 402 with `insufficient_balance`.
+- A call returns HTTP 403 with `permission_denied` when the key, or the person who created it, is not permitted to make that call.
+
+## How do you check availability?
+
+`GET /baremetal/availability` takes an optional `product` query parameter. The default is `b300`.
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/baremetal/availability?product=b300" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+The response includes `product`, `total`, `available` and `active` as node counts, `default_duration_hours` and `currency`. Availability is a snapshot and does not reserve a node. For pricing, see [Helios pricing](https://www.helios.co/pricing).
+
+## How do you list and read allocations?
+
+`GET /baremetal/grants` returns `{ "grants": [...] }` for the key's workspace. It accepts `limit` (default 50) and `offset`. `GET /baremetal/grants/{grant_id}` returns one allocation.
+
+These calls return allocations with a status of `pending` or `active`. Ended allocations are not returned. Reading an allocation that is not available to the key returns HTTP 403.
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/baremetal/grants" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+```json title="200 OK (fields trimmed)"
+{
+  "grants": [
+    {
+      "id": "GRANT_ID",
+      "node_id": "...",
+      "customer_email": "you@example.com",
+      "status": "active",
+      "starts_at": "2026-11-17T10:00:00Z",
+      "ends_at": "2026-11-19T10:00:00Z",
+      "access_mode": "customer_public_key",
+      "access_started_at": "2026-11-17T10:05:00Z",
+      "seconds_remaining": 0,
+      "usage_amount": 0,
+      "currency": "USD",
+      "access_requests": [
+        {
+          "id": "ACCESS_REQUEST_ID",
+          "status": "active",
+          "key_type": "ssh-ed25519",
+          "key_fingerprint": "SHA256:...",
+          "key_version": 1,
+          "submitted_at": "2026-11-17T09:40:00Z"
+        }
+      ],
+      "node": { "id": "...", "name": "...", "gpu_model": "...", "gpu_count": 8, "status": "..." }
+    }
+  ]
+}
+```
+
+The values above are placeholders. Allocation fields include timing (`starts_at`, `ends_at`, `seconds_remaining`), cost (`usage_amount`, `currency`, and rate and cost fields) and your SSH key submissions in `access_requests`. Each entry in `access_requests` has an `id`, a `status` such as `submitted`, `active` or `failed`, the key's type and fingerprint, and timestamps.
+
+## How do you submit and revoke SSH public keys?
+
+`POST /baremetal/grants/{grant_id}/ssh-keys` submits an SSH public key. `PUT /baremetal/grants/{grant_id}/ssh-key` does the same thing.
+
+```bash title="Terminal"
+curl -X POST "$HELIOS_API_BASE/baremetal/grants/GRANT_ID/ssh-keys" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{\"public_key\": \"$(cat ~/.ssh/id_ed25519.pub)\"}"
+```
+
+<Callout type="warn" title="Submit only the public key">
+The `public_key` field takes one OpenSSH public key, the line from the file that ends in `.pub`. Do not send a private key.
+</Callout>
+
+Key rules:
+
+- One key per request, as a single OpenSSH public key line without options.
+- Supported types are Ed25519, RSA with at least 3072 bits, and ECDSA with the NIST P-256, P-384 or P-521 curves.
+- Up to 20 keys per allocation. More returns HTTP 409 `ssh_public_key_limit_reached`.
+- The request body is limited to 20 KiB.
+
+The response is `{ "access_request": { ... } }` with the `id`, `status` and fingerprint of the submitted key. Submitting a key you already submitted returns the existing request. Helios installs submitted keys, and the `status` changes as that progresses. Read the allocation to follow it.
+
+`DELETE /baremetal/grants/{grant_id}/ssh-keys/{access_request_id}` asks Helios to revoke a key. It returns `202 Accepted` with the access request, because Helios completes the revocation.
+
+## How do you read connection details?
+
+`GET /baremetal/grants/{grant_id}/access` returns the SSH details for an active allocation.
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/baremetal/grants/GRANT_ID/access" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+```json title="200 OK (fields trimmed)"
+{
+  "grant_id": "GRANT_ID",
+  "node": { "id": "...", "name": "...", "ssh_host": "...", "ssh_port": 22 },
+  "ssh": {
+    "username": "...",
+    "command": "ssh -i /path/to/your/private_key -p 22 USER@HOST",
+    "host_key_fingerprint": "SHA256:...",
+    "key_fingerprint": "SHA256:..."
+  },
+  "starts_at": "2026-11-17T10:00:00Z",
+  "ends_at": "2026-11-19T10:00:00Z",
+  "seconds_remaining": 0
+}
+```
+
+The response does not include a private key. You sign in with the private key that matches a public key you submitted.
+
+You get HTTP 403 with `grant_inactive` when the allocation is not active, and with `access_not_started` until you start access in the console.
+
+## How do you read usage?
+
+`GET /baremetal/grants/{grant_id}/usage` returns usage and cost for an allocation.
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/baremetal/grants/GRANT_ID/usage" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+The response includes `grant_id`, `usage_amount`, `currency`, `seconds_elapsed`, `seconds_remaining`, `last_billed_at` and the rate and cost fields for the allocation.
+
+```python title="usage.py"
+import os
+import requests
+
+base = os.environ["HELIOS_API_BASE"]
+headers = {"Authorization": f"Bearer {os.environ['HELIOS_API_KEY']}"}
+
+grants = requests.get(f"{base}/baremetal/grants", headers=headers, timeout=30).json()["grants"]
+for grant in grants:
+    usage = requests.get(
+        f"{base}/baremetal/grants/{grant['id']}/usage", headers=headers, timeout=30
+    ).json()
+    print(grant["id"], grant["status"], usage["usage_amount"], usage.get("currency"))
+```
+
+For how bare metal is billed, see [Billing and access windows](/docs/bare-metal/billing-and-access-windows).
+
+## Which errors are specific to bare metal?
+
+Errors use the [standard error object](/docs/api/errors-and-limits). These codes come from the bare metal endpoints:
+
+| HTTP status | `code` | Meaning |
+|---|---|---|
+| 400 | `invalid_ssh_public_key` | The key is not one supported OpenSSH public key without options |
+| 400 | `invalid_input` | The request body or a field is not valid |
+| 403 | `permission_denied` | The allocation is not available to this key, or the key owner is not an active workspace member |
+| 403 | `grant_inactive` | The allocation is not active |
+| 403 | `access_not_started` | Access has not been started in the console |
+| 404 | `baremetal_not_found` | The allocation or resource was not found |
+| 409 | `ssh_public_key_locked` | The key can no longer be replaced |
+| 409 | `ssh_public_key_limit_reached` | The allocation has the maximum number of keys |
+| 409 | `invalid_state_transition` | The action is not valid for the allocation's current state |
+| 503 | `onboarding_delivery_unavailable` | Submitting an SSH public key is temporarily unavailable. Retry later. |
+
+<LastVerified date="2026-11-17" />

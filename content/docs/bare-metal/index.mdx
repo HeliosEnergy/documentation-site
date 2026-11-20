@@ -1,0 +1,57 @@
+---
+title: Bare metal
+description: Request SSH access to a full NVIDIA B300 node with 8 GPUs from the Helios console. Access is approval-based and starts when you start it.
+---
+
+Bare metal gives you SSH access to a whole GPU node, not a share of one. In the Helios console you request a B300 node, Helios installs your SSH public key, and you connect over SSH.
+
+<Status state="live" />
+
+## What you get
+
+- One or more nodes, each with 8 NVIDIA B300 GPUs (HGX B300).
+- Dedicated SSH access using a key pair that you create. The private key stays on your machine.
+- A live monitoring pane for GPU and host telemetry while your access is active.
+- A time-limited access window with the accrued cost shown in the console.
+
+## How it works
+
+1. You open **Baremetal** in the console and select **B300**.
+2. You choose how many nodes you need and paste an SSH public key. See [Request bare metal access](/docs/bare-metal/request-access).
+3. Helios reviews the request. Approval is required for every request.
+4. Helios installs your key and checks that SSH works.
+5. You click **Start access**. The console shows the host, user, port and a ready-to-copy `ssh` command. See [Connect with SSH](/docs/bare-metal/connect-with-ssh).
+6. Your access window begins when you start access and ends when the window closes. Bare metal usage is recorded by the hour, pro-rated to elapsed time, starting at **Start access**. See [Billing and access windows](/docs/bare-metal/billing-and-access-windows).
+
+## What can you request in the console?
+
+| Product | In the console | What to do |
+|---|---|---|
+| B300 (8 GPUs per node) | Request access | Follow [Request bare metal access](/docs/bare-metal/request-access). |
+| RTX PRO 6000 bare metal | Contact us | Not yet available in the console. [Talk to the Helios team](https://www.helios.co/contact). |
+| GB300 NVL72 | Contact us | Not yet available in the console. [Talk to the Helios team](https://www.helios.co/contact). |
+
+For committed, reserved capacity see [Reserved clusters](/docs/bare-metal/reserved-clusters).
+
+<Callout type="info" title="Approval comes first">
+Submitting a request does not reserve a node, start the access window or show any node details. The access window and usage recording begin only after your SSH access is activated and you start it.
+</Callout>
+
+## Next steps
+
+<Cards>
+  <Card title="Request access" href="/docs/bare-metal/request-access">
+    Create a key, submit a request and follow its status.
+  </Card>
+  <Card title="Connect with SSH" href="/docs/bare-metal/connect-with-ssh">
+    Start access, copy the ssh command and manage keys.
+  </Card>
+  <Card title="Monitoring" href="/docs/bare-metal/monitoring">
+    Read GPU and host telemetry for your node.
+  </Card>
+  <Card title="Billing and access windows" href="/docs/bare-metal/billing-and-access-windows">
+    When usage starts being recorded, how it accrues and when access ends.
+  </Card>
+</Cards>
+
+<LastVerified date="2026-11-17" />

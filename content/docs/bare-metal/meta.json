@@ -1,0 +1,11 @@
+{
+  "title": "Bare metal",
+  "pages": [
+    "index",
+    "request-access",
+    "connect-with-ssh",
+    "monitoring",
+    "billing-and-access-windows",
+    "reserved-clusters"
+  ]
+}

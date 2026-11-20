@@ -1,0 +1,141 @@
+---
+title: Errors and rate limits
+description: The Helios API error object, the 401, 402, 403 and 429 responses, rate-limit headers and how to retry.
+---
+
+The Helios API reports failures as a JSON error object, in an OpenAI-style format, with an HTTP status code. Rate limits are set per API key and returned in response headers.
+
+<Status state="live" />
+
+## What does an error look like?
+
+```json title="401 Unauthorized"
+{
+  "error": {
+    "message": "Invalid or expired API key",
+    "type": "authentication_error",
+    "code": "invalid_api_key"
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `message` | A readable description. Do not parse it. |
+| `type` | The error class, for example `authentication_error`. |
+| `code` | A stable identifier you can branch on, for example `invalid_api_key`. |
+| `param` | The request field that caused the error, when there is one. |
+
+Branch on the HTTP status and `code`, not on `message`.
+
+## Which errors can you get?
+
+| HTTP status | `type` | `code` | When |
+|---|---|---|---|
+| 400 | `invalid_request_error` | `invalid_input` | The body is malformed or a field is out of range. `param` often names the field. |
+| 401 | `authentication_error` | `missing_api_key`, `invalid_auth_format`, `empty_api_key`, `invalid_api_key` | The key is missing, malformed, unknown or revoked |
+| 402 | `insufficient_quota` | `insufficient_balance` | The wallet is below the minimum balance |
+| 402 | `insufficient_quota` | `daily_budget_exceeded` | The key reached its daily budget limit |
+| 403 | `permission_error` | `permission_denied` | The key lacks a required scope, or is not permitted to use the model |
+| 404 | `not_found_error` | `model_not_found` | The model does not exist or is not available |
+| 429 | `rate_limit_error` | `rate_limit_exceeded` | The key exceeded a rate limit |
+| 5xx | `server_error`, `timeout_error` | `server_error`, `timeout` | An error on the Helios side, or a timeout. Retry with backoff. |
+
+Bare metal endpoints add their own codes. See [Bare metal endpoints](/docs/api/bare-metal-endpoints#which-errors-are-specific-to-bare-metal).
+
+Check the HTTP status first, then the `code` when there is one. Treat 5xx responses as retryable.
+
+## Why did I get a 401?
+
+The API checks the `Authorization` header first. The `code` tells you what to fix:
+
+| `code` | Fix |
+|---|---|
+| `missing_api_key` | Add the `Authorization: Bearer <key>` header. |
+| `invalid_auth_format` | Use the form `Bearer <key>`, with one space. |
+| `empty_api_key` | The token after `Bearer` is empty. Check that your environment variable is set. |
+| `invalid_api_key` | The key is not a valid active Helios key. It may be mistyped, unknown or revoked. Keys start with `hel_live_` or `hel_test_`. Create a new key if yours was revoked. |
+
+See [Authentication and keys](/docs/api/authentication-and-keys).
+
+## Why did I get a 402?
+
+A `402` means the request was refused for a spending reason, and no work was done.
+
+- **`insufficient_balance`.** Your workspace wallet is below the minimum balance. The threshold is the larger of a Helios platform minimum and the minimum balance set on your wallet. The balance check includes a `balance` object with the `current` balance and the `required` amount. The check runs on every request, including `GET /models` and the bare metal endpoints. The code can also be returned, without the `balance` object, when the estimated cost of a request that would return `202` is more than your available balance. Add funds in the console and retry. See [Add funds](/docs/billing/add-funds).
+- **`daily_budget_exceeded`.** The key's daily budget limit is used up. Change the key's daily budget limit in the console, or wait for the next day.
+
+```json title="402 Payment Required"
+{
+  "error": {
+    "message": "Insufficient balance. Current: ..., Required: ...",
+    "type": "insufficient_quota",
+    "code": "insufficient_balance",
+    "balance": { "current": 0, "required": 0 }
+  }
+}
+```
+
+## How do rate limits work?
+
+Each key has a requests-per-minute limit and a requests-per-day limit. You set them when you create a key and can change them later with **Edit Settings** on the key. If you do not set them, the key uses Helios default limits. Defaults can change, so read the response headers instead of assuming a number.
+
+- Limits apply per key, across every endpoint under the base URL. Polling a request status and listing models count as requests.
+- The windows are rolling: the last 60 seconds and the last 24 hours.
+- Requests that fail authentication are not counted against a key.
+
+Authenticated responses include these headers:
+
+| Header | Meaning |
+|---|---|
+| `X-RateLimit-Limit-Minute` | The key's per-minute limit |
+| `X-RateLimit-Remaining-Minute` | Requests left in the current minute window |
+| `X-RateLimit-Limit-Day` | The key's per-day limit |
+
+When a limit is exceeded the API returns HTTP 429 with the error code `rate_limit_exceeded` and a `Retry-After` header with the number of seconds to wait.
+
+```http title="429 Too Many Requests"
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+X-RateLimit-Limit-Minute: ...
+X-RateLimit-Remaining-Minute: 0
+
+{
+  "error": {
+    "message": "Rate limit exceeded. Try again in 30 seconds.",
+    "type": "rate_limit_error",
+    "code": "rate_limit_exceeded"
+  }
+}
+```
+
+## How should you retry?
+
+- Retry `429` after the number of seconds in `Retry-After`.
+- Retry `5xx` responses with exponential backoff and a limit on attempts.
+- Do not retry `400`, `401`, `402` or `403` without changing something. The request will fail the same way.
+- Use an `Idempotency-Key` on queued requests that you retry. See [Inference endpoints](/docs/api/inference-endpoints#how-do-you-avoid-duplicate-requests).
+
+```python title="retry.py"
+import os
+import time
+import requests
+
+def get_with_retry(url, attempts=5):
+    headers = {"Authorization": f"Bearer {os.environ['HELIOS_API_KEY']}"}
+    for attempt in range(attempts):
+        resp = requests.get(url, headers=headers, timeout=30)
+        if resp.status_code == 429:
+            time.sleep(int(resp.headers.get("Retry-After", "5")))
+        elif resp.status_code >= 500:
+            time.sleep(2 ** attempt)
+        else:
+            return resp
+    return resp
+```
+
+## Where do you get help?
+
+See [Troubleshooting](/docs/support/troubleshooting) for common problems and the [Support page](/docs/support) for how to reach Helios.
+
+<LastVerified date="2026-11-17" />

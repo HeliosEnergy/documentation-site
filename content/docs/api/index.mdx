@@ -1,0 +1,133 @@
+---
+title: API overview
+description: "Base URL, authentication and a first request for the Helios API: chat completions in the OpenAI request format for supported features, and bare metal endpoints."
+---
+
+The Helios API lets you call AI inference models and manage bare metal access from code. You authenticate with an API key that you create in the console.
+
+<Status state="live" />
+
+<Callout type="info" title="Base URL">
+`https://api.helios.co/external/v1`
+
+Every path in these docs is relative to this URL. Examples use the environment variable `HELIOS_API_BASE` for it.
+</Callout>
+
+## What does the API cover?
+
+| Area | What you can do | Page |
+|---|---|---|
+| Inference | Chat completions, image, text, speech and multimodal requests, request status and cancel, model list, usage | [Inference endpoints](/docs/api/inference-endpoints) |
+| Bare metal | Check availability, read allocations and usage, read connection details, manage SSH public keys | [Bare metal endpoints](/docs/api/bare-metal-endpoints) |
+
+Access is controlled by [scopes](/docs/api/scopes) on each key. Failures return a JSON error object. See [Errors and limits](/docs/api/errors-and-limits).
+
+<Callout type="warn" title="OpenAI request format, for supported features">
+The chat completions endpoint follows the OpenAI request format for supported features. It does not cover every OpenAI endpoint or parameter. Image, speech, transcription and multimodal requests use Helios request formats. Helios does not publish an OpenAPI specification.
+</Callout>
+
+## How do you make your first request?
+
+<Steps>
+<Step>
+
+**Create an API key.** In the console, open the **API** tab on any model page and select **Create New Key**. Copy the key when it is shown. The console shows it once. See [Authentication and keys](/docs/api/authentication-and-keys).
+
+</Step>
+<Step>
+
+**Set environment variables.** Use placeholders in your own shell. Do not put keys in source files.
+
+```bash title="Terminal"
+export HELIOS_API_BASE="https://api.helios.co/external/v1"
+export HELIOS_API_KEY="hel_live_..."
+```
+
+</Step>
+<Step>
+
+**List the models your key can call.** Pick an `id` from the response. The response from `GET /models` is the source of truth for which models exist. These docs do not name a model, and the examples use `<model-id>` as a placeholder. Use a model from `GET /models` that supports chat completions. If the list has none, contact the Helios team.
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/models" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+</Step>
+<Step>
+
+**Send a chat completion.** Replace `<model-id>` with the `id` of a model from the previous step that supports chat completions.
+
+<Tabs items={['curl', 'Python', 'JavaScript']}>
+<Tab value="curl">
+
+```bash title="Terminal"
+curl -i "$HELIOS_API_BASE/inference/chat/completions" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "<model-id>",
+    "messages": [{"role": "user", "content": "Say hello in one sentence."}]
+  }'
+```
+
+</Tab>
+<Tab value="Python">
+
+```python title="hello.py"
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ["HELIOS_API_KEY"],
+    base_url=os.environ["HELIOS_API_BASE"] + "/inference",
+)
+
+response = client.chat.completions.create(
+    model="<model-id>",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+)
+print(response.choices[0].message.content)
+```
+
+</Tab>
+<Tab value="JavaScript">
+
+```javascript title="hello.mjs"
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.HELIOS_API_KEY,
+  baseURL: `${process.env.HELIOS_API_BASE}/inference`,
+});
+
+const response = await client.chat.completions.create({
+  model: "<model-id>",
+  messages: [{ role: "user", content: "Say hello in one sentence." }],
+});
+console.log(response.choices[0].message.content);
+```
+
+</Tab>
+</Tabs>
+
+</Step>
+</Steps>
+
+### Why does the SDK base URL end in /inference?
+
+The OpenAI SDKs append `/chat/completions` to the base URL. Helios serves chat completions at `/inference/chat/completions`, so the SDK base URL is `HELIOS_API_BASE` plus `/inference`. The `GET /models` endpoint is at `/models`, outside that prefix, so call it with curl or `fetch` rather than `client.models.list()`.
+
+### Why did my request return 202 and no completion?
+
+Some models return the completion in the response, with status `200`. Other models return `202 Accepted` with a request `id`, and you poll for the result. The OpenAI SDKs expect a completion body and cannot read the `202` response, so use plain HTTP for those models. See [Inference endpoints](/docs/api/inference-endpoints#how-do-you-get-the-result-of-a-queued-request).
+
+## What do all requests have in common?
+
+- **Authentication.** Send `Authorization: Bearer <key>`. Keys start with `hel_live_` or `hel_test_`.
+- **Format.** Request bodies are JSON. Send `Content-Type: application/json`.
+- **Wallet check.** Every request, including `GET /models` and the bare metal endpoints, is rejected with HTTP 402 when your workspace wallet is below the minimum balance. See [Errors and limits](/docs/api/errors-and-limits).
+- **Rate limits.** Limits are set per key and returned in response headers. See [Errors and limits](/docs/api/errors-and-limits#how-do-rate-limits-work).
+- **Payload size.** Chat completion bodies are limited to 10 MB.
+
+<LastVerified date="2026-11-17" />

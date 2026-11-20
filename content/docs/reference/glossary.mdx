@@ -1,0 +1,28 @@
+---
+title: Glossary
+description: Definitions of the terms used in the Helios console and docs, including organization, workspace, wallet, access window, B300 and GB300 NVL72.
+---
+
+This glossary defines the terms used across the Helios docs, in alphabetical order.
+
+| Term | Definition |
+|---|---|
+| **Access window** | The period during which you have access to a bare metal node. It begins when you start access and ends automatically. See [Billing and access windows](/docs/bare-metal/billing-and-access-windows). |
+| **Admin** | A role that can manage people and add funds. See [Roles](/docs/accounts/roles). |
+| **API key** | A secret you create in the console to authenticate API requests. Keys start with `hel_live_` or `hel_test_`. See [Authentication and keys](/docs/api/authentication-and-keys). |
+| **B300** | The NVIDIA HGX B300 platform. A Helios B300 node has 8 GPUs. See [Bare metal](/docs/bare-metal). |
+| **Bare metal** | A whole physical server dedicated to you. At Helios, you request a node in the console and connect over SSH. |
+| **GB300 NVL72** | An NVIDIA rack-scale system. It is not yet available in the console. Contact the Helios team for details. See [Product status](/docs/reference/product-status). |
+| **Guest** | A person who belongs to a different organization and was invited into a single workspace. A guest sees that workspace but not Users & Access. See [Users and access](/docs/accounts/users-and-access). |
+| **Inference** | Running a trained model to produce results. Helios AI inference lets you call hosted models from the playground or the API. See [AI inference](/docs/inference). |
+| **Jupyter notebook node** | A node running JupyterLab on an RTX PRO 6000 GPU. A workspace admin allocates it. Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as At Capacity. Contact the Helios team for access. See [Jupyter notebooks](/docs/notebooks). |
+| **Member** | The lowest role. Members use the products in a workspace but cannot manage people or funding. See [Roles](/docs/accounts/roles). |
+| **Minimum balance** | A wallet setting. Inference requests are refused when your balance is below it. See [Minimum balance and budget alerts](/docs/billing/autopay-and-alerts). |
+| **Node** | A single server. A B300 node has 8 NVIDIA B300 GPUs. |
+| **Organization** | The account that owns people and workspaces. It is the ownership and membership boundary. See [Organizations and workspaces](/docs/accounts/organizations-and-workspaces). |
+| **Owner** | The highest role. The person who signs up for an organization is its Owner. See [Roles](/docs/accounts/roles). |
+| **Reserved GPU cluster** | Contracted GPU capacity for a defined term, arranged with the Helios team. See [Reserved clusters](/docs/bare-metal/reserved-clusters). |
+| **RTX PRO 6000** | The NVIDIA RTX PRO 6000 Blackwell Server Edition GPU. Helios uses it for Jupyter notebooks. |
+| **SSH public key** | The public half of an SSH key pair. You paste it into the console to request bare metal access. You keep the private key and do not share it. See [Request access](/docs/bare-metal/request-access). |
+| **Wallet** | The prepaid balance for one workspace. See [Billing and wallet](/docs/billing). |
+| **Workspace** | The team and GPU-access boundary inside an organization. Each workspace has one wallet. See [Organizations and workspaces](/docs/accounts/organizations-and-workspaces). |

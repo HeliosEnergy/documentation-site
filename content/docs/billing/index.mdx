@@ -1,0 +1,55 @@
+---
+title: Billing and wallet
+description: Each Helios workspace has one prepaid wallet in US dollars. See what the Wallet page shows, who can change it, and what happens when the balance runs low.
+---
+
+Each workspace has one wallet. You fund it with a card payment. The Wallet page shows the balance and a list of transactions. See [How usage is billed](/docs/billing/how-usage-is-billed) for what each product charges for.
+
+<Status state="live" />
+
+## What is a wallet?
+
+A wallet holds prepaid funds in US dollars for one workspace. A workspace has exactly one wallet, and different workspaces in the same organization have separate wallets. Funds you add to one workspace's wallet apply to that workspace.
+
+Open **Wallet** in the console sidebar to see the wallet for the workspace that is selected in the workspace switcher.
+
+## What does the Wallet page show?
+
+| Section | What it shows |
+|---|---|
+| **Current Balance** | The balance of the selected workspace's wallet. |
+| **Add Funds** | Where you add money by card. See [Add funds](/docs/billing/add-funds). |
+| **Wallet Settings** | The **Minimum Balance** setting. See [Minimum balance and budget alerts](/docs/billing/autopay-and-alerts). |
+| **Recent Transactions** | Credits and debits, with description, type, status, date and amount. |
+
+Use **Recent Transactions** to see what was added or debited.
+
+## Who can do what?
+
+| Action | Member | Admin | Owner |
+|---|---|---|---|
+| View the wallet and transactions | Yes | Yes | Yes |
+| Add funds | No | Yes | Yes |
+| Change the minimum balance | No | Yes | Yes |
+
+Adding funds needs an Admin or Owner role in the organization. Changing the minimum balance needs an Admin or Owner role. See [Roles](/docs/accounts/roles) for the full role guide.
+
+## What happens when the balance runs low?
+
+When your balance is too low, API requests are rejected with HTTP status `402` and the error code `insufficient_balance`. The balance has to be at least a small platform minimum, or the minimum balance you set in Wallet Settings, whichever is larger. Add funds and send the request again. See [Errors and limits](/docs/api/errors-and-limits).
+
+For how a low balance affects other products, contact the Helios team through the [Support page](/docs/support).
+
+## Where are invoices and refunds?
+
+The console does not have an invoices page or downloadable invoices. Wallet top-ups and debits appear in **Recent Transactions**. For a question about a charge or a refund, see [Support](/docs/support).
+
+## Next steps
+
+<Cards>
+  <Card title="Add funds" href="/docs/billing/add-funds">Top up a workspace wallet by card.</Card>
+  <Card title="Minimum balance and budget alerts" href="/docs/billing/autopay-and-alerts">The minimum balance and per-model inference budget alerts.</Card>
+  <Card title="How usage is billed" href="/docs/billing/how-usage-is-billed">What each product charges for.</Card>
+</Cards>
+
+<LastVerified date="2026-11-17" />

@@ -1,0 +1,76 @@
+---
+title: Authentication and API keys
+description: Create, limit and revoke Helios API keys, and how to send a key to authenticate requests.
+---
+
+You authenticate to the Helios API with an API key sent as a bearer token. You create and revoke keys in the console.
+
+<Status state="live" />
+
+## How do you authenticate a request?
+
+Send the key in the `Authorization` header:
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/models" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+A key is a string that starts with `hel_live_` or `hel_test_`. Requests without a valid key return HTTP 401. See [Errors and limits](/docs/api/errors-and-limits).
+
+Each key belongs to one workspace. Requests are made on behalf of that workspace. Billing depends on the model. See [How usage is billed](/docs/billing/how-usage-is-billed).
+
+## How do you create an API key?
+
+In the console, open **AI Inference**, select a model, open the **API** tab and select **Create New Key**. This form asks for a name only. It creates a live key with the default inference scopes.
+
+The console also has a full key form, which lets you choose scopes, rate limits and a daily budget. Its **Create API Key** form has these fields:
+
+| Field | What it does |
+|---|---|
+| Key Name | Required. A label for you. |
+| Description | Optional note about what the key is for. |
+| Live Mode | Chooses the key prefix. On gives `hel_live_`. Off gives `hel_test_`. |
+| Requests per Minute, Requests per Day | Rate limits for this key. |
+| API Scopes | What the key may do. At least one scope is required. See [Scopes](/docs/api/scopes). |
+| Daily Budget Limit (USD) | Shown for live keys. Requests are rejected once the key reaches this spend in a day. |
+
+<Callout type="warn" title="The key is shown once">
+When you create a key, the console shows the full key one time. Copy it and store it before you close the dialog. If you lose a key, revoke it and create a new one.
+</Callout>
+
+### Who can create keys?
+
+You create keys in the console. Give each key only the scopes it needs, and treat every key as a secret. See [Scopes](/docs/api/scopes) and [Security](/docs/security).
+
+## What limits can you set on a key?
+
+- **Requests per minute and per day.** Each key has its own limits, returned in response headers. See [Errors and limits](/docs/api/errors-and-limits#how-do-rate-limits-work).
+- **Daily budget limit.** An optional USD amount for live keys. When the key's spend for the day reaches it, requests return HTTP 402 with the error code `daily_budget_exceeded`.
+- **Scopes.** A key can only call the endpoints its scopes allow.
+
+Where the console offers **Edit Settings** on a key's menu, you can change the key's name, description, rate limits and daily budget. You cannot change its scopes. To change scopes, create a new key and revoke the old one.
+
+## How long does a key work?
+
+A key works until you revoke it. Rotate keys on your own schedule.
+
+## How do you revoke a key?
+
+In the console, revoke a key with **Revoke Key** on the key's menu, where it is offered. The dialog asks for a reason. The key list in the **API** tab on a model page also has a trash icon that revokes a key. Revoking is immediate and cannot be undone. All requests that use the key fail afterwards.
+
+To rotate a key, create the new key first, update your applications, then revoke the old key.
+
+## How should you store keys?
+
+- Keep keys in environment variables or a secrets manager. Do not commit them to source control.
+- Do not put keys in browser or mobile code. Call the API from a server you control.
+- Give each application its own key so you can revoke one without affecting the others.
+- Choose the narrowest scopes that work. Treat `baremetal:access:read` and `baremetal:access:write` as sensitive. See [Scopes](/docs/api/scopes).
+- If you think a key is exposed, revoke it right away and create a replacement.
+
+## Do test keys behave differently?
+
+The `hel_test_` prefix identifies keys created with Live Mode off. Both prefixes authenticate to the same API. Treat both as secrets.
+
+<LastVerified date="2026-11-17" />

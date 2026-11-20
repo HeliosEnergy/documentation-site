@@ -1,0 +1,81 @@
+---
+title: AI inference
+description: Browse models, test them in the playground, review request history and call them from an API that follows the OpenAI request format for supported features.
+---
+
+AI inference in the Helios console lets you run models from your browser or from code. The model card shows pricing where a model has pricing.
+
+<Status state="live" />
+
+## What can you do with AI inference?
+
+- **Browse the marketplace.** Search models and filter them by category.
+- **Test in the playground.** Send a test request to a model from its page.
+- **Review request history.** See your recent playground requests, and see recent API requests per model with their status, latency and cost.
+- **Watch per-model telemetry.** See usage, recent requests and system health for each model.
+- **Set a monthly budget alert.** Get an email when spend on a model reaches a threshold.
+- **Call models from code.** Use the [API](/docs/api) with an API key. The chat completions endpoint follows the OpenAI request format for supported features.
+
+## Where do you find it in the console?
+
+Open **AI Inference** in the console sidebar. It opens the model marketplace, with a search bar and a category filter. Select a model to open its page.
+
+Each model page has five tabs:
+
+| Tab | What it shows |
+|---|---|
+| Playground | Send a test request. Chat-style models open a chat. Other models open an input panel and an output panel. |
+| API | Your API keys for the model. |
+| Telemetry | Usage, recent requests, system health and the monthly budget. |
+| Details | The model description, capabilities, category and version. |
+| Requests | A list of your recent playground requests, which you can clear. |
+
+## Which models are available?
+
+The **Models** list in the console is the source of truth. Helios adds, changes and removes models over time, so these docs do not list them. The model card shows pricing where a model has pricing.
+
+You can also list the models your key can call with the [`GET /models`](/docs/api/inference-endpoints#how-do-you-list-models) endpoint.
+
+## How do you try a model?
+
+<Steps>
+<Step>
+
+Open **AI Inference** and find a model with the search bar or the category filter.
+
+</Step>
+<Step>
+
+Select the model, then open the **Playground** tab.
+
+</Step>
+<Step>
+
+Enter your input and send the request. For models with an input panel, the playground shows an estimated cost for the request.
+
+</Step>
+<Step>
+
+Open the **Requests** tab to see recent playground requests. The **Telemetry** tab lists recent requests for the model with their status, latency and cost.
+
+</Step>
+</Steps>
+
+Where a model has pricing, usage is charged to your workspace wallet. See [Add funds](/docs/billing/add-funds).
+
+## What happens when your wallet is low?
+
+The API rejects requests with HTTP 402 and the error code `insufficient_balance` when your wallet balance is below the minimum threshold. Add funds and retry. See [Errors and limits](/docs/api/errors-and-limits).
+
+## Next steps
+
+<Cards>
+  <Card title="Models and budgets" href="/docs/inference/models-and-budgets">
+    Model categories, billing basis, telemetry and the monthly budget alert.
+  </Card>
+  <Card title="API overview" href="/docs/api">
+    Base URL, API keys and a first request.
+  </Card>
+</Cards>
+
+<LastVerified date="2026-11-17" />

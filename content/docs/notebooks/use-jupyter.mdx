@@ -1,0 +1,75 @@
+---
+title: Use a Jupyter notebook
+description: "The console flow for a JupyterLab node: allocate, open it with the URL and token, refresh the token, download your workspace and deallocate."
+---
+
+This page describes the console flow for a JupyterLab node: allocate, open, rotate the token, download your files and release the node. Allocating, refreshing and deallocating need the workspace Admin role.
+
+<Callout type="warn" title="Allocation is currently unavailable">
+Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as **At Capacity**. [Contact the Helios team](https://www.helios.co/contact) for access.
+</Callout>
+
+## What do you need?
+
+- A workspace Admin or Owner role. Members can view the page only. See [Roles](/docs/accounts/roles).
+- An allocate button that is available. If the card reads **At Capacity**, you cannot allocate a node.
+- No active notebook of your own. Each user can hold one.
+
+## How do you allocate and open a notebook?
+
+<Steps>
+<Step>
+
+### Open Jupyter Notebooks
+
+In the console sidebar, select **Jupyter Notebooks**. The **RTX PRO 6000** card shows the allocate button.
+
+</Step>
+<Step>
+
+### Allocate a node
+
+Select the allocate button on the card, then **Confirm** in the dialog "Allocate a Jupyter notebook?" The console assigns an available notebook server and shows how many are ready.
+
+</Step>
+<Step>
+
+### Open JupyterLab
+
+A **Your Jupyter** panel appears at the top of the page with your server ID and URL. Select **Open Jupyter**, or select **Copy URL** and paste it into a browser.
+
+</Step>
+</Steps>
+
+<Callout type="warn" title="Treat the URL like a password">
+The Jupyter URL contains an access token. Anyone who has the full URL can open your notebook. Do not paste it into chat, tickets or shared documents. If it is exposed, refresh the notebook to rotate the token.
+</Callout>
+
+## How do you rotate the token?
+
+Select **Refresh** in the **Your Jupyter** panel and confirm. Refresh restarts the Jupyter service and rotates the token, so the old URL stops working. Use the new URL the console shows. Your workspace files are kept unless you tick **Also wipe workspace storage on the node** before you confirm.
+
+## How do you save your files?
+
+Select **Download workspace** to save your workspace as a compressed archive (`.tgz`). Do this before you deallocate, and before a long idle period.
+
+## How do you deallocate?
+
+Select **Deallocate** and confirm. This stops the Jupyter service and frees the node for others. To wipe your workspace files right away, tick **Also wipe workspace storage on the node** before you confirm. Do not rely on files remaining on the node after you deallocate.
+
+## Is notebook storage permanent?
+
+No. Treat notebook storage as temporary and do not rely on a workspace being present after a notebook stops. Download your work.
+
+## What if something goes wrong?
+
+| What you see | What to do |
+|---|---|
+| **At Capacity** on the card | Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as At Capacity. Contact the Helios team for access. |
+| "Already allocated" | You already hold a notebook. Use it, or deallocate it first. |
+| The URL no longer opens | The token changed after a refresh, or the notebook was stopped. Copy the current URL from the **Your Jupyter** panel, or allocate again. |
+| You cannot allocate, refresh or deallocate | These actions need the workspace Admin role. Ask a workspace Admin. |
+
+For anything else, see [Troubleshooting](/docs/support/troubleshooting).
+
+<LastVerified date="2026-11-17" />

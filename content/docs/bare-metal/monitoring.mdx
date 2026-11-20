@@ -1,0 +1,44 @@
+---
+title: Monitor your node
+description: Open the Monitoring pane to see live GPU and host telemetry for your active B300 access, with history windows from 15 minutes to 7 days.
+---
+
+The Monitoring pane shows live GPU and host telemetry for the node on your active access. It is available while your access is active and shows only your own node.
+
+<Status state="live" />
+
+## How do you open it?
+
+On the **Baremetal** page, select **Monitoring** on your node card. The button appears when the node is active. The pane opens on the right side of the page.
+
+Monitoring shows data for your active access. It is not available while setup is in progress, and it is not available after your access ends.
+
+## What does it show?
+
+Use the window selector at the top to switch between **Live**, **15m**, **1h**, **6h**, **24h** and **7d**. History starts when your access started.
+
+| Section | What you see |
+|---|---|
+| Node metrics | GPUs reporting (for example 8 / 8), average utilization, power, average and maximum temperature, memory used, and uptime for the selected window. |
+| Host | Load (1m), memory, uptime, and filesystem usage for the host. |
+| Trends | Charts of temperature, power and utilization over the selected window. |
+| Per-GPU metrics | One card per GPU with VRAM and utilization dials, temperature and power. Temperatures at or above 85 C are flagged as a warning, and at or above 90 C as critical. |
+
+Use the host section when a job stops and the GPUs look idle. A job can fail because the host runs out of memory or disk space even when the GPUs are healthy.
+
+<Callout type="info" title="What monitoring does not cover">
+Monitoring shows utilization, memory, power and temperature. It is not a hardware-fault alerting tool. If you suspect a hardware problem, contact Helios through the [Support page](/docs/support).
+</Callout>
+
+## What do the messages mean?
+
+| Message | What to do |
+|---|---|
+| "Monitoring is not available for this node" | Telemetry has not been linked to this node yet. Contact Helios if you expected it. |
+| "Monitoring is unavailable" | Metrics could not be read right now. The console describes this as a problem with Helios monitoring, not with your node. Try again later. |
+| "Host metrics are not available for this node right now" | GPU metrics can still be shown. Try again later. |
+| "Metrics unavailable" | The node is not reporting GPU metrics at the moment. Check that you can still reach the node over SSH. |
+
+See [Troubleshooting](/docs/support/troubleshooting) if a message persists.
+
+<LastVerified date="2026-11-17" />

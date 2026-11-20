@@ -1,0 +1,351 @@
+---
+title: Inference endpoints
+description: Request and response formats for chat completions, image, text, speech and multimodal requests, request status and cancel, models and usage.
+---
+
+The inference endpoints run models from the Helios marketplace. All paths are relative to the [base URL](/docs/api) and need a key with the scopes listed in [Scopes](/docs/api/scopes).
+
+<Status state="live" />
+
+Examples use `HELIOS_API_BASE` and `HELIOS_API_KEY` as set in the [API overview](/docs/api). `<model-id>` stands for the `id` of a model from the [models list](#how-do-you-list-models). The Models list in the console and the `GET /models` response are the source of truth, because the catalog changes. Do not hard-code model names.
+
+## Which endpoint do you use?
+
+| Model category | Endpoint | Scope |
+|---|---|---|
+| Text and chat | `POST /inference/chat/completions` or `POST /inference/llm/{model}` | `inference:write` |
+| Multimodal | `POST /inference/multimodal/{model}` | `inference:write` |
+| Image generation | `POST /inference/image/{model}` | `inference:write` |
+| Text to speech | `POST /inference/tts/{model}` | `inference:write` |
+| Speech to text | `POST /inference/stt/{model}` | `inference:write` |
+
+On the endpoints with `{model}` in the path, also include `"model"` in the JSON body. The model in the path takes precedence. Calling an endpoint with a model from a different category returns HTTP 400.
+
+## How do chat completions work?
+
+`POST /inference/chat/completions` accepts a chat request in the OpenAI request format, for supported features. How the response arrives depends on the model.
+
+- **Models that return the completion in the response.** The response has status `200` and is the completion. These models accept the OpenAI chat request body. Streaming, multimodal content arrays and tool definitions work where the model supports them.
+- **Models that return `202`.** The API validates the request and returns `202 Accepted` with a request `id`. You [poll for the result](#how-do-you-get-the-result-of-a-queued-request).
+
+You cannot choose which behaviour a model has. Check the response status. A `200` response is the completion. A `202` response means you poll for the result.
+
+```bash title="Terminal"
+curl -i "$HELIOS_API_BASE/inference/chat/completions" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "<model-id>",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Hello!"}
+    ],
+    "max_tokens": 256,
+    "temperature": 0.7
+  }'
+```
+
+### What can you send to a model that returns `202`?
+
+| Field | Type | Rules |
+|---|---|---|
+| `model` | string | Required. Letters, digits, hyphens and underscores, up to 255 characters. |
+| `messages` | array | Required. 1 to 100 messages. Each has a `role` of `system`, `user` or `assistant` and a string `content` of up to 100,000 characters. |
+| `max_tokens` | integer | 1 to 100,000. |
+| `temperature` | number | 0 to 2. |
+| `top_p` | number | 0 to 1. |
+| `n` | integer | 1 to 10. |
+| `stop` | array of strings | Stop sequences. |
+| `user` | string | An identifier for your end user. |
+| `stream` | boolean | Not supported. `true` returns HTTP 400. |
+
+The request body is limited to 10 MB. Violations return HTTP 400 with an error object that usually names the field in `param`.
+
+### What does a `202` response look like?
+
+```json title="202 Accepted"
+{
+  "id": "req_...",
+  "status": "pending",
+  "model": "<model-id>",
+  "category": "TEXT_GENERATION",
+  "created_at": "2026-11-17T10:30:00Z",
+  "message": "Request queued. Poll GET /external/v1/inference/requests/req_... for status."
+}
+```
+
+The response also includes `estimated_cost`, the amount Helios reserves from your wallet until the request finishes.
+
+## What are the category endpoints?
+
+Each category endpoint takes the model in the path and returns `202 Accepted` with the same response shape as above. Replace `<model-id>` with a model of that category.
+
+<Tabs items={['Text (llm)', 'Image', 'Text to speech', 'Speech to text', 'Multimodal']}>
+<Tab value="Text (llm)">
+
+`POST /inference/llm/{model}` takes the same body as the chat completions request for models that return `202`. It works for models in the `TEXT_GENERATION` or `LLM` categories.
+
+</Tab>
+<Tab value="Image">
+
+`POST /inference/image/{model}`
+
+| Field | Rules |
+|---|---|
+| `model` | Required. |
+| `prompt` | Required. Up to 100,000 characters. |
+| `n` | 1 to 10. |
+| `size` | `WIDTHxHEIGHT`, for example `1024x1024`. |
+| `quality` | `standard` or `hd`. |
+| `user` | Optional identifier. |
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/inference/image/<model-id>" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "<model-id>", "prompt": "A city skyline at sunset", "size": "1024x1024"}'
+```
+
+</Tab>
+<Tab value="Text to speech">
+
+`POST /inference/tts/{model}`
+
+| Field | Rules |
+|---|---|
+| `model` | Required. |
+| `input` | Required. Text to speak, up to 100,000 characters. |
+| `voice` | Required. A voice identifier supported by the model. |
+| `response_format` | `mp3`, `opus`, `aac`, `flac` or `wav`. |
+| `speed` | 0.25 to 4.0. |
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/inference/tts/<model-id>" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "<model-id>", "input": "Hello from Helios.", "voice": "VOICE_ID"}'
+```
+
+</Tab>
+<Tab value="Speech to text">
+
+`POST /inference/stt/{model}`
+
+| Field | Rules |
+|---|---|
+| `model` | Required. |
+| `file` | Base64-encoded audio. Send `file` or `audio_url`. Up to 25 MB encoded. |
+| `audio_url` | A URL to the audio, as an alternative to `file`. |
+| `language` | A two-letter ISO-639-1 code, for example `en`. |
+| `prompt` | Optional text to guide transcription. |
+| `response_format` | `json`, `text`, `srt`, `vtt` or `verbose_json`. |
+| `temperature` | 0 to 1. |
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/inference/stt/<model-id>" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "<model-id>", "audio_url": "https://example.com/audio.mp3", "language": "en"}'
+```
+
+</Tab>
+<Tab value="Multimodal">
+
+`POST /inference/multimodal/{model}`
+
+| Field | Rules |
+|---|---|
+| `model` | Required. |
+| `prompt` | Text prompt. Send `prompt` or `messages`. Up to 100,000 characters. |
+| `messages` | Chat-style messages, up to 100. |
+| `image` | Base64-encoded image. Send `image` or `image_url`. Up to 10 MB encoded. |
+| `image_url` | A URL to the image, as an alternative to `image`. |
+| `max_tokens` | 1 to 100,000. |
+| `temperature` | 0 to 2. |
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/inference/multimodal/<model-id>" \
+  -H "Authorization: Bearer $HELIOS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "<model-id>", "prompt": "Describe this image.", "image_url": "https://example.com/photo.jpg"}'
+```
+
+</Tab>
+</Tabs>
+
+## How do you get the result of a queued request?
+
+Poll `GET /inference/requests/{id}` with the `id` from the `202` response. This needs `inference:read`. A request can only be read by the key that created it.
+
+```json title="200 OK, completed text request (fields trimmed)"
+{
+  "id": "req_...",
+  "status": "completed",
+  "model": "<model-id>",
+  "category": "TEXT_GENERATION",
+  "result": {
+    "object": "chat.completion",
+    "model": "<model-id>",
+    "choices": [
+      {
+        "index": 0,
+        "message": { "role": "assistant", "content": "Hello! How can I help?" },
+        "finish_reason": "stop"
+      }
+    ]
+  },
+  "created_at": "2026-11-17T10:30:00Z",
+  "completed_at": "2026-11-17T10:30:05Z",
+  "processing_time_ms": 5000
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `id` | The request id. |
+| `status` | `pending`, `in_progress`, `completed`, `failed`, `cancelled` or `timeout`. |
+| `model`, `category` | The model and its category. |
+| `result` | Present when `completed`. Its shape depends on the category, listed below. |
+| `error` | Present when `failed`. An error object with a `message`. |
+| `created_at`, `completed_at`, `processing_time_ms` | Timing. `completed_at` and `processing_time_ms` are present once known. |
+| `cost` | An object with `credits` and `usd`. This is the final cost when known and the estimate before that. |
+
+The `result` for each category:
+
+| Category | `result` |
+|---|---|
+| Text and chat | A chat completion object with `choices` |
+| Multimodal | An object with `object` set to `multimodal.completion` and `choices` |
+| Image generation | `{ "created": ..., "data": [ { "b64_json": "..." } ] }` |
+| Text to speech | `{ "audio": "<base64 audio>" }` |
+| Speech to text | `{ "text": "...", "language": "...", "duration": ... }` |
+
+Token counts in a text `result` are approximate. Use the top-level `cost` to see what a request cost.
+
+<Tabs items={['Python', 'JavaScript']}>
+<Tab value="Python">
+
+```python title="poll.py"
+import os
+import time
+import requests
+
+base = os.environ["HELIOS_API_BASE"]
+headers = {"Authorization": f"Bearer {os.environ['HELIOS_API_KEY']}"}
+
+resp = requests.post(
+    f"{base}/inference/chat/completions",
+    headers=headers,
+    json={"model": "<model-id>", "messages": [{"role": "user", "content": "Hello!"}]},
+    timeout=60,
+)
+resp.raise_for_status()
+
+if resp.status_code == 200:
+    print(resp.json()["choices"][0]["message"]["content"])
+else:  # 202: the request is queued
+    request_id = resp.json()["id"]
+    while True:
+        status = requests.get(
+            f"{base}/inference/requests/{request_id}", headers=headers, timeout=30
+        ).json()
+        if status["status"] in ("completed", "failed", "cancelled", "timeout"):
+            break
+        time.sleep(2)
+    if status["status"] == "completed":
+        print(status["result"]["choices"][0]["message"]["content"])
+    else:
+        print("Request ended with status:", status["status"])
+```
+
+</Tab>
+<Tab value="JavaScript">
+
+```javascript title="poll.mjs"
+const base = process.env.HELIOS_API_BASE;
+const headers = {
+  Authorization: `Bearer ${process.env.HELIOS_API_KEY}`,
+  "Content-Type": "application/json",
+};
+
+const resp = await fetch(`${base}/inference/chat/completions`, {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    model: "<model-id>",
+    messages: [{ role: "user", content: "Hello!" }],
+  }),
+});
+if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${await resp.text()}`);
+
+if (resp.status === 200) {
+  const completion = await resp.json();
+  console.log(completion.choices[0].message.content);
+} else {
+  // 202: the request is queued
+  const { id } = await resp.json();
+  const done = ["completed", "failed", "cancelled", "timeout"];
+  let status;
+  do {
+    await new Promise((r) => setTimeout(r, 2000));
+    status = await (await fetch(`${base}/inference/requests/${id}`, { headers })).json();
+  } while (!done.includes(status.status));
+  console.log(status.status === "completed" ? status.result.choices[0].message.content : status.status);
+}
+```
+
+</Tab>
+</Tabs>
+
+Each poll is a request and counts toward your key's [rate limits](/docs/api/errors-and-limits#how-do-rate-limits-work). Poll every few seconds, not in a tight loop.
+
+### How do you cancel a request?
+
+`DELETE /inference/requests/{id}` cancels a request that is still `pending`. This needs `inference:write`. It returns the updated status object with `status` set to `cancelled`, and releases the amount Helios reserved for the request. A request that has started or finished returns HTTP 400.
+
+### How do you avoid duplicate requests?
+
+Send an `Idempotency-Key` header on a request that returns `202`. If you send the same key again with the same API key, Helios returns `202` with the existing request instead of creating another. Idempotency keys apply to requests that return `202` only.
+
+## How do you list models?
+
+`GET /models` returns the active models your key can call. `GET /models/{model}` returns one model. Both need `inference:read`.
+
+```bash title="Terminal"
+curl "$HELIOS_API_BASE/models" \
+  -H "Authorization: Bearer $HELIOS_API_KEY"
+```
+
+The response is an object with `object` set to `list` and a `data` array. Each model has these fields:
+
+| Field | Meaning |
+|---|---|
+| `id` | The model identifier. Use it as `model` in requests and as `{model}` in paths. |
+| `object` | Set to `model`. |
+| `created` | Unix timestamp. |
+| `owned_by` | `helios`. |
+| `category` | The model category, for example `TEXT_GENERATION`. |
+| `pricing` | An object with `per_request` and `per_second`, and `per_token` when the model has token pricing. |
+
+The response can include other fields. Do not depend on fields that are not listed here.
+
+An unknown or inactive model returns HTTP 404 with the error code `model_not_found`.
+
+## How do you read usage?
+
+These endpoints need `inference:read`.
+
+| Endpoint | Returns |
+|---|---|
+| `GET /usage/` | Totals for the authenticated key: `total_requests`, `successful_requests`, `failed_requests`, `total_cost`, `avg_latency_ms`, `total_tokens_used` and the `period` |
+| `GET /usage/models` | Request count, cost and average latency per model across the whole workspace, in `models` |
+| `GET /usage/history` | Per-request `records` for the authenticated key, with `request_id`, `model_name`, `category`, `outcome`, `http_status_code`, `latency_ms`, `cost_credits` and `created_at` |
+
+Query parameters:
+
+- `start` and `end` as RFC 3339 timestamps, or `days` as an integer from 1 to 365. The default is the last 30 days.
+- `limit` (1 to 100, default 50) and `offset` on `/usage/history`.
+
+Use the totals endpoint with the trailing slash: `GET /usage/`.
+
+<LastVerified date="2026-11-17" />

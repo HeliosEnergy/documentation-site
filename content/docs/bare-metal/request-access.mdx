@@ -1,0 +1,108 @@
+---
+title: Request bare metal access
+description: Create an SSH key pair, submit a B300 capacity request in the console and follow it through approval and setup.
+---
+
+To get a B300 node you submit an approval-only request in the console with an SSH public key. Helios reviews it, installs your key and verifies SSH before you can start access.
+
+<Status state="live" />
+
+## What do you need before you start?
+
+- A Helios console account and a workspace. See [Create an account](/docs/getting-started/create-account).
+- An SSH key pair on the computer you will connect from.
+
+<Callout type="warn" title="Share only the public key">
+Paste only the public key (the file that ends in `.pub`). Do not paste a private key anywhere. Helios does not need your private key and the console does not accept one.
+</Callout>
+
+## How do you create an SSH key?
+
+If you do not already have a key, create an Ed25519 key on your own machine:
+
+```bash title="Terminal"
+ssh-keygen -t ed25519 -C "you@example.com"
+```
+
+Accept the default file location or choose your own, and set a passphrase. The command creates two files. Print the public one and copy the whole line:
+
+```bash title="Terminal"
+cat ~/.ssh/id_ed25519.pub
+```
+
+The public key is a single line that starts with `ssh-ed25519`, `ssh-rsa` or `ecdsa-sha2-`.
+
+| Key type | Accepted |
+|---|---|
+| Ed25519 | Yes |
+| RSA | Yes, 3072-bit or stronger |
+| ECDSA | Yes |
+
+The console accepts one complete OpenSSH public key per submission, without `authorized_keys` options.
+
+## How do you submit a request?
+
+<Steps>
+<Step>
+
+### Open the Baremetal page
+
+In the console sidebar, select **Baremetal**. In the **GPUs** section, select the **B300** card.
+
+</Step>
+<Step>
+
+### Choose On-demand and select Request access
+
+In the **Pricing** section, keep **On-demand** selected and select **Request access**. The **Reserved** view on this page is for reference only. You cannot request capacity from it.
+
+</Step>
+<Step>
+
+### Choose the number of nodes
+
+Set the number of nodes with the slider or the number field. The console shows each node as 8 B300 GPUs and shows an availability figure. A request above that figure is submitted at that figure. If you need more, [contact the Helios team](https://www.helios.co/contact).
+
+</Step>
+<Step>
+
+### Paste your SSH public key
+
+Paste the full public key into **SSH public key**. If the key is not in a supported format, the console shows "Paste one complete OpenSSH public key in a supported format."
+
+</Step>
+<Step>
+
+### Submit the request
+
+Select **Submit** (the button shows your node count, for example "Submit 1-node request"). The console confirms with "B300 capacity request submitted". The request is now waiting for approval.
+
+</Step>
+</Steps>
+
+You can have one open request at a time.
+
+## What happens after you submit?
+
+The console shows the request status and the fingerprint of the key you submitted.
+
+| What you see | What it means | What you do |
+|---|---|---|
+| Awaiting capacity approval | Helios has your request. The key cannot be replaced while the request is in progress. | Wait. You can select **Revoke request** to withdraw it, or **Request additional capacity** to contact Helios about more nodes. |
+| Preparing your B300 capacity | The request is approved and access is being set up. Node and network details stay hidden until every requested node is active. | Wait. |
+| Capacity request updated | The request was not approved. The console shows the reason when one was given. | Select **Submit a new request**, or [contact the Helios team](https://www.helios.co/contact). |
+| Your node card with SSH access | The node is ready. | Go to [Connect with SSH](/docs/bare-metal/connect-with-ssh). |
+
+If the console shows "Key setup could not be completed", submit a replacement public key from the node card with **Replace public key**.
+
+Selecting **Revoke request** on a pending request removes the key you submitted and lets you submit a new request.
+
+## Who can request access?
+
+Any signed-in member of the workspace can submit a request. Starting access requires an organization Admin or Owner. See [Connect with SSH](/docs/bare-metal/connect-with-ssh).
+
+## What if the request is stuck or fails?
+
+See [Troubleshooting](/docs/support/troubleshooting) for pending requests and SSH problems. For anything else, use the [Support page](/docs/support).
+
+<LastVerified date="2026-11-17" />

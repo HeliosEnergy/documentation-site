@@ -1,0 +1,122 @@
+---
+title: Troubleshooting
+description: "Fixes for common Helios console and API problems: sign-in, invites, bare metal access requests, SSH, low balance, API key errors and rate limits."
+---
+
+This page covers problems that customers can run into today. If your problem is not here, or the steps do not fix it, see [Support](/docs/support).
+
+## I cannot sign in or my account is not verified
+
+The console shows the reason on the sign-in page.
+
+- **"Your account is not verified."** Accounts created with an email and password need email verification. Open the verification email and follow the link. If you cannot find it, check your spam folder, then use **Resend Verification Email** on the verification page.
+- **"An account with this email address does not exist."** Check the address for typos. If you have not created an account, [sign up](https://console.helios.co/login?tab=signup). If you were invited, use the link in the invitation email.
+- **"Wrong password" or "Invalid email or password."** Check the password. To reset it, use the forgot password link on the sign-in page. The reset email is sent only if an account exists for that address.
+- **The SMS code does not arrive.** Sign-up verifies your phone number with a code sent by SMS. Check the number, then select **Resend Code** when it becomes available.
+- **Card verification fails during sign-up.** The page shows the message returned for the card. Check the card details or try another card.
+- **You use Google or Microsoft.** Sign in with the same provider that you used to sign up.
+
+See [Create an account](/docs/getting-started/create-account).
+
+## I did not receive an invitation, or the invitation page shows an error
+
+- **No email.** Check your spam folder. Ask an Admin or Owner of the organization to check the address on the invitation and to resend it or send a new one. See [Users and access](/docs/accounts/users-and-access).
+- **"This invitation is no longer valid. Ask for a new one."** The invitation has expired, was revoked, or was already accepted. Ask an Admin or Owner for a new invitation.
+- **"Wrong account" or "This invitation was issued to a different email address."** An invitation works only for the address it was sent to. Sign out, then sign in or sign up with that address and open the invitation link again.
+
+## I cannot see Users & Access
+
+- **You are a guest.** Guests are invited into a workspace from another organization. The **Users & Access** menu item does not appear for guests.
+- **You are a Member.** Listing and managing people needs an Admin or Owner role. Ask an Admin or Owner.
+
+See [Roles](/docs/accounts/roles).
+
+## My bare metal access request is still pending
+
+A request moves through several states, and the console shows the current one.
+
+| What the console shows | What it means |
+|---|---|
+| **Awaiting capacity approval** | Helios has your request. You cannot replace the key while the request is in progress. |
+| **Preparing your B300 capacity** | The request is approved and access is being set up. Node details stay hidden until the requested nodes are active. |
+| **Public key received** and a progress list | Helios is installing your key and verifying SSH access. When access is ready, the console shows **Start access to the node now**. |
+| A message with a reason | The request was not approved. You can select **Submit a new request**. |
+
+What you can do:
+
+- Wait for the state to change. Bare metal access is approval-based, and the console does not give a time for approval.
+- Select **Revoke request** to withdraw a pending request. This removes the submitted key and lets you submit a new request.
+- An account can have one open request at a time. For more capacity than a request covers, select **Request additional capacity** or use [Talk to our team](https://www.helios.co/contact).
+- If the request has been in one state for longer than you expected, contact the team through the [Support page](/docs/support) and include the key fingerprint shown in the console.
+
+See [Request bare metal access](/docs/bare-metal/request-access).
+
+## SSH is denied or times out
+
+Check these in order.
+
+1. **Access has started.** The SSH host, port, user and command appear only after you select **Start access to the node now**. Starting access needs an Admin or Owner role. It also begins your allocated window.
+2. **The window has not ended.** The console shows when access expires. After that time, access is revoked and shows as **Expired**.
+3. **Use the values from the console.** Copy the command from the SSH access panel. Do not guess the host, port or user.
+4. **Use the matching private key.** The key you connect with must match the public key you submitted. Compare the fingerprint of your key with the fingerprint shown in the console. Check that the private key file is readable only by you.
+5. **The key type is accepted.** The console accepts Ed25519, RSA and ECDSA OpenSSH public keys. It asks for RSA keys of 3072 bits or more.
+6. **A key you added is ready.** Each key you add has its own status in the SSH keys list. A new key may not work until Helios has installed it.
+7. **Run verbose SSH.** Add `-v` to the command. The output shows which key was offered and where the connection stopped.
+
+If these do not help, contact the team through the [Support page](/docs/support). Include the verbose output with any private information removed, and do not include a private key. See [Connect with SSH](/docs/bare-metal/connect-with-ssh).
+
+## Inference requests fail with HTTP 402
+
+**Cause.** The API returns HTTP status `402` with the error code `insufficient_balance` when the workspace wallet is below the required balance. The response includes the current balance and the required balance. The required balance is the larger of a small platform minimum and the minimum balance set in Wallet Settings.
+
+**What to do.**
+
+1. Open **Wallet** and check **Current Balance** and **Minimum Balance**.
+2. Add funds, or ask an Admin or Owner to add them. See [Add funds](/docs/billing/add-funds).
+3. If you set a high minimum balance, lower it. See [Minimum balance and budget alerts](/docs/billing/autopay-and-alerts).
+4. Send the request again.
+
+A `402` can also mean that the API key has used its daily budget limit. The error message says so. Raise the limit on the key, or wait for the next day.
+
+## API requests fail with HTTP 401
+
+**Cause.** The API could not authenticate the key. Common reasons:
+
+- The `Authorization` header is missing or not in the form `Authorization: Bearer <your key>`.
+- The key is mistyped or incomplete. Helios keys start with `hel_live_` or `hel_test_`.
+- The key was revoked. A revoked key returns the error code `invalid_api_key` with the message "Invalid or expired API key".
+
+**What to do.**
+
+1. Check the header format and that the whole key was copied.
+2. In the console, check that the key has not been revoked.
+3. If the key is revoked or lost, create a new key. The console shows a key only once. See [API keys](/docs/api/authentication-and-keys).
+4. Check that the key has the scopes the endpoint needs. See [Scopes](/docs/api/scopes).
+
+## API requests fail with HTTP 429
+
+**Cause.** The request rate for the key is over its limit. The API returns HTTP status `429` with the error code `rate_limit_exceeded`.
+
+**What to do.**
+
+1. Read the `Retry-After` header. It gives the number of seconds to wait before you retry.
+2. Check the rate limit headers on any response: `X-RateLimit-Limit-Minute`, `X-RateLimit-Remaining-Minute` and `X-RateLimit-Limit-Day`.
+3. Slow down, space out requests, and retry with a growing delay.
+4. If you need higher limits, contact the team through the [Support page](/docs/support).
+
+See [Errors and limits](/docs/api/errors-and-limits).
+
+## A Jupyter notebook shows "At Capacity"
+
+**Cause.** Notebook allocation is currently unavailable in the console, which shows RTX PRO 6000 notebooks as **At Capacity**.
+
+**What to do.**
+
+- Contact the Helios team for access. See the [Support page](/docs/support).
+- A workspace Admin allocates notebooks. Members can view notebooks but not allocate one. See [Use Jupyter](/docs/notebooks/use-jupyter).
+
+## Still stuck?
+
+See [Support](/docs/support) for how to reach the team and what to include. For security concerns, follow the steps in [Security concerns](/docs/support#security-concerns).
+
+<LastVerified date="2026-11-17" />
